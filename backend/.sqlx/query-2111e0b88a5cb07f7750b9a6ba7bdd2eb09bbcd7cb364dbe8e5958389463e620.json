@@ -1,0 +1,73 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT id, original_url, short_url, user_id, views, category, slug, created_at, updated_at\n                FROM urls\n                WHERE user_id = $1\n                AND (urls.category = $2 OR $2 = 'All')\n                ORDER BY created_at DESC\n                LIMIT $3 OFFSET $4\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "original_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "short_url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "user_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 4,
+        "name": "views",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "category",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "slug",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Text",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "2111e0b88a5cb07f7750b9a6ba7bdd2eb09bbcd7cb364dbe8e5958389463e620"
+}

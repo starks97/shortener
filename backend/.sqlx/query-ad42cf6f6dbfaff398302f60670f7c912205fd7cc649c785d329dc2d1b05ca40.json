@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE urls SET short_url = $1, slug = $2, updated_at = NOW() WHERE id = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ad42cf6f6dbfaff398302f60670f7c912205fd7cc649c785d329dc2d1b05ca40"
+}

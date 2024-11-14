@@ -1,0 +1,89 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Cargo launch",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--lib"
+                ]
+            },
+            "args": []
+        },
+        {
+            "type": "lldb",
+            "request": "attach",
+            "name": "Attach",
+            "pid": "${command:pickMyProcess}" // use ${command:pickProcess} to pick other users' processes
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'extension'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=extension"
+                ],
+                "filter": {
+                    "name": "extension",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'url_shortener_api'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=url_shortener_api",
+                    "--package=url_shortener_api"
+                ],
+                "filter": {
+                    "name": "url_shortener_api",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'url_shortener_api'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=url_shortener_api",
+                    "--package=url_shortener_api"
+                ],
+                "filter": {
+                    "name": "url_shortener_api",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

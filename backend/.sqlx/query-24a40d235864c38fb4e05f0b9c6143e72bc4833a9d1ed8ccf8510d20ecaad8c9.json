@@ -1,0 +1,75 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        INSERT INTO urls (original_url, short_url, user_id, views, category, slug)\n        VALUES ($1, $2, $3, $4, $5, $6)\n        RETURNING *\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "original_url",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "short_url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "category",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "slug",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "views",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Varchar",
+        "Uuid",
+        "Int4",
+        "Varchar",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "24a40d235864c38fb4e05f0b9c6143e72bc4833a9d1ed8ccf8510d20ecaad8c9"
+}

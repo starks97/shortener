@@ -1,0 +1,1 @@
+cargo:rustc-env=MIME_TYPES_GENERATED_PATH=/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/build/mime_guess-b922cb063caee74f/out/mime_types_generated.rs

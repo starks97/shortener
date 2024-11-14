@@ -1,0 +1,9 @@
+# Ignore environment files
+backend/.env
+web/.env
+
+# Or ignore all .env files in any subfolder
+**/.env
+
+# Ignore node_modules across the project
+**/node_modules

@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE urls SET category = $1, updated_at = NOW() WHERE id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "993ad6c671f9ec2b52deeebf6bd12c9840dce90131c7aa0ba5addcb643950f96"
+}

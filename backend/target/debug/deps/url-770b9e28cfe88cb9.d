@@ -1,0 +1,11 @@
+/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/liburl-770b9e28cfe88cb9.rmeta: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/host.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/origin.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/parser.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/path_segments.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/slicing.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/quirks.rs
+
+/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/url-770b9e28cfe88cb9.d: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/host.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/origin.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/parser.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/path_segments.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/slicing.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/quirks.rs
+
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/lib.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/host.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/origin.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/parser.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/path_segments.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/slicing.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/url-2.5.3/src/quirks.rs:

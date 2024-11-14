@@ -1,0 +1,9 @@
+/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/libfutures_lite-f3dd70016b3adf51.rmeta: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/future.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/prelude.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/stream.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/io.rs
+
+/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/futures_lite-f3dd70016b3adf51.d: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/future.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/prelude.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/stream.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/io.rs
+
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/lib.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/future.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/prelude.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/stream.rs:
+/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/futures-lite-1.13.0/src/io.rs:
