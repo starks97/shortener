@@ -1,9 +1,6 @@
 import { ApiResponse, LoginData } from "@interfaces";
 
-export default async function login(
-  email: string,
-  password: string
-): Promise<{ data: ApiResponse<LoginData>; refreshToken?: string }> {
+export default async function login(email: string, password: string) {
   const res = await fetch("http://localhost:8000/api/auth/login", {
     method: "POST",
     headers: {
@@ -12,10 +9,12 @@ export default async function login(
     body: JSON.stringify({ email, password }),
   });
 
-  const data = (await res.json()) as ApiResponse<LoginData>;
+  const apiResponse = (await res.json()) as ApiResponse<LoginData>;
+
+  const { data } = apiResponse;
 
   if (!res.ok) {
-    throw new Error(data.message || "Login failed");
+    throw new Error(apiResponse.message || "Login failed");
   }
 
   const setCookieHeader = res.headers.get("set-cookie");

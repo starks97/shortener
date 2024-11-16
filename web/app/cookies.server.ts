@@ -9,3 +9,13 @@ export const refreshTokenCookie = createCookie("refresh_token", {
   domain: process.env.DOMAIN,
   priority: "high",
 });
+
+export const accessTokenCookie = createCookie("access_token", {
+  secure: false,
+  sameSite: "lax",
+  path: "/",
+  domain: process.env.DOMAIN,
+  priority: "high",
+  maxAge: 60 * 30,
+  httpOnly: false,
+});

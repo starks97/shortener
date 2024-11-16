@@ -5,7 +5,7 @@ import { LoginUserSchema, LoginUserSchemaType } from "@models/auth.models";
 import { ActionData } from "~/interfaces";
 
 import login from "@api/auth/login";
-import { refreshTokenCookie } from "@cookies";
+import { refreshTokenCookie, accessTokenCookie } from "@cookies";
 import { validationAction } from "@utils/validationAction";
 
 import { LoginFormField } from "~/consts";
@@ -19,10 +19,12 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   if (errors) {
+    console.log("Validation errors:", errors);
     return Response.json({ errors }, { status: 400 });
   }
 
   if (!data) {
+    console.log("No data received");
     return Response.json(
       { errors: { general: "Invalid data" } },
       { status: 400 }
@@ -36,20 +38,34 @@ export async function action({ request }: ActionFunctionArgs) {
 
     if (!response) return redirect("/login", { status: 400 });
 
+    const headers = new Headers();
+
     if (response.refreshToken) {
-      const cookieHeader = await refreshTokenCookie.serialize(
-        response.refreshToken,
-        { sameSite: "lax" }
+      headers.append(
+        "Set-Cookie",
+        await refreshTokenCookie.serialize(response.refreshToken, {
+          sameSite: "lax",
+        })
       );
-      return redirect("/", {
-        headers: {
-          "Set-Cookie": cookieHeader,
-        },
-      });
     }
-    return response.data;
+
+    if (response.data?.access_token) {
+      headers.append(
+        "Set-Cookie",
+        await accessTokenCookie.serialize(response.data.access_token, {
+          sameSite: "lax",
+        })
+      );
+    }
+
+    if (headers.has("Set-Cookie")) {
+      return redirect("/", { headers });
+    }
+
+    return Response.json(response.data);
   } catch (e) {
     if (e instanceof Error) {
+      console.log("Error caught:", e.message);
       return Response.json({ errors: { general: e.message } }, { status: 400 });
     }
   }

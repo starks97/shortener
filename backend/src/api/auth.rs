@@ -133,7 +133,7 @@ pub async fn login(
 
     Ok(HttpResponse::Ok()
         .cookie(refresh_cookie)
-        .json(serde_json::json!({"status": "success", "access_token": access_token_details.token.unwrap()})))
+        .json(serde_json::json!({"status": "success", "data": { "access_token": access_token_details.token.unwrap() }})))
 }
 
 #[post("/auth/register")]
@@ -265,7 +265,7 @@ async fn refresh_access_token(
     }
 
     Ok(HttpResponse::Ok()
-    .json(serde_json::json!({"status": "success", "access_token": access_token_details.token.unwrap()})))
+    .json(serde_json::json!({"status": "success", "data": { "access_token": access_token_details.token.unwrap() }})))
 }
 
 #[get("/auth/logout")]

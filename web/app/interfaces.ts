@@ -1,7 +1,12 @@
+// A utility type that flattens nested 'data' properties in an API response.
+// If T has a 'data' property, it extracts and returns its type U.
+// Otherwise, it returns T itself.
+type FlattenData<T> = T extends { data: infer U } ? U : T;
+
 export interface ApiResponse<T> {
   status: "success" | "error";
   message?: string;
-  data?: T;
+  data?: FlattenData<T>;
 }
 
 export type QueryParams = {
