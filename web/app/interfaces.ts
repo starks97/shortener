@@ -48,6 +48,16 @@ export type RegisterData = {
   updatedAt: string | null;
 };
 
+export type Me = {
+  user: {
+    createdAt: string;
+    email: string;
+    id: string;
+    name: string;
+    updatedAt: string;
+  };
+};
+
 export type LoginData = {
   access_token: string;
 };

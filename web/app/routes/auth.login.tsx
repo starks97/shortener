@@ -36,7 +36,7 @@ export async function action({ request }: ActionFunctionArgs) {
   try {
     const response = await login(email, password);
 
-    if (!response) return redirect("/login", { status: 400 });
+    if (!response) return redirect("/auth/login", { status: 400 });
 
     const headers = new Headers();
 

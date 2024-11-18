@@ -7,7 +7,6 @@ export const refreshTokenCookie = createCookie("refresh_token", {
   path: "/",
   maxAge: 60 * 60 * 24 * 7,
   domain: process.env.DOMAIN,
-  priority: "high",
 });
 
 export const accessTokenCookie = createCookie("access_token", {
@@ -15,7 +14,6 @@ export const accessTokenCookie = createCookie("access_token", {
   sameSite: "lax",
   path: "/",
   domain: process.env.DOMAIN,
-  priority: "high",
   maxAge: 60 * 30,
-  httpOnly: false,
+  httpOnly: true,
 });

@@ -1,5 +1,4 @@
 import { FormField } from "./interfaces";
-//import { LoginUserSchemaType } from "./models/auth.models";
 
 export const LoginFormField: FormField[] = [
   {
