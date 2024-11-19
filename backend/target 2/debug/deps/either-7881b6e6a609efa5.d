@@ -1,9 +1,0 @@
-/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/libeither-7881b6e6a609efa5.rmeta: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged_optional.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/iterator.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/into_either.rs
-
-/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/deps/either-7881b6e6a609efa5.d: /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/lib.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged_optional.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/iterator.rs /Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/into_either.rs
-
-/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/lib.rs:
-/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged.rs:
-/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/serde_untagged_optional.rs:
-/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/iterator.rs:
-/Users/jeffersonespinoza/.cargo/registry/src/index.crates.io-6f17d22bba15001f/either-1.13.0/src/into_either.rs:

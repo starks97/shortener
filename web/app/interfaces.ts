@@ -41,11 +41,13 @@ export enum UrlCategories {
 }
 
 export type RegisterData = {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: string | null;
-  updatedAt: string | null;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    createdAt: string | null;
+    updatedAt: string | null;
+  };
 };
 
 export type Me = {
