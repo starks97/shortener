@@ -10,5 +10,7 @@ web/.env
 
 # Ignore target file in the backend folder
 backend/target
+backend/target2
 
 **/target
+**/target2
