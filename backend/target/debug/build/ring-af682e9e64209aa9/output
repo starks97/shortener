@@ -1,3 +1,0 @@
-cargo:rustc-link-lib=static=ring-core
-cargo:rustc-link-lib=static=ring-test
-cargo:rustc-link-search=native=/Users/jeffersonespinoza/Desktop/shortener/backend/target/debug/build/ring-af682e9e64209aa9/out

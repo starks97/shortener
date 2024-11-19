@@ -7,3 +7,8 @@ web/.env
 
 # Ignore node_modules across the project
 **/node_modules
+
+# Ignore target file in the backend folder
+backend/target
+
+**/target
