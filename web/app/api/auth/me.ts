@@ -16,8 +16,6 @@ export default async function me(token: string) {
 
     const data = (await res.json()) as ApiResponse<Me>;
 
-    console.log(data.data?.user);
-
     return data;
   } catch (err) {
     if (err instanceof Error) {

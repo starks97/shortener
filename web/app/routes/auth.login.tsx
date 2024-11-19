@@ -59,7 +59,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     if (headers.has("Set-Cookie")) {
-      return redirect("/", { headers });
+      return redirect("/dashboard", { headers });
     }
 
     return Response.json(response.data);

@@ -3,7 +3,7 @@ import middleware from "../middleware";
 
 import { useLoaderData } from "@remix-run/react";
 
-export const loader = async ({ context, request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const response = await middleware(request);
   return response;
 };
@@ -20,7 +20,7 @@ export default function Dashboard() {
     };
   };
 
-  const data = useLoaderData<LoaderData>();
+  //const data = useLoaderData<LoaderData>();
 
   return (
     <div>

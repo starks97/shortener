@@ -5,7 +5,7 @@ export default async function refresh(token: string) {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Cookie: `refresh_token=${token}`,
     },
   });
 

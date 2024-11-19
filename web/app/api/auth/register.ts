@@ -17,7 +17,9 @@ export default async function register(
     throw new Error("Unauthorized");
   }
 
-  const data = (await res.json()) as ApiResponse<RegisterData>;
+  const apiResponse = (await res.json()) as ApiResponse<RegisterData>;
+
+  const { data } = apiResponse;
 
   return data;
 }
