@@ -14,7 +14,11 @@ import {
 } from "@tanstack/react-query";
 import { createQueryClient } from "@utils/queryClient";
 
+import { Toaster } from "react-hot-toast";
+
 import "./tailwind.css";
+
+import "./styles/global.css";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -64,6 +68,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <HydrationBoundary state={dehydratedState}>
         <Outlet />
+        <Toaster />
       </HydrationBoundary>
     </QueryClientProvider>
   );

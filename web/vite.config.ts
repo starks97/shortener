@@ -30,6 +30,7 @@ export default defineConfig({
       "@models": path.resolve(__dirname, "app/models"),
       "@api": path.resolve(__dirname, "app/api"),
       "@cookies": path.resolve(__dirname, "app/cookies.server.ts"),
+      "@styles": path.resolve(__dirname, "app/styles"),
     },
   },
 });
