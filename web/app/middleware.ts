@@ -12,16 +12,14 @@ export default async function middleware(req: Request) {
   if (accessToken) {
     const user = await me(accessToken);
     if (user) {
-      return Response.json({ status: "success", data: { user, accessToken } });
+      //return {accesToken}
+      return true;
     }
-    if (refreshToken) {
-      return redirect("/auth/refresh", { status: 302 });
-    }
-    return redirect("/auth/login", { status: 302 });
-  } else {
-    if (refreshToken) {
-      return redirect("/auth/refresh", { status: 302 });
-    }
-    return redirect("/auth/login", { status: 302 });
   }
+
+  if (refreshToken) {
+    throw redirect("/auth/refresh", { status: 302 });
+  }
+
+  throw redirect("/auth/login", { status: 302 });
 }

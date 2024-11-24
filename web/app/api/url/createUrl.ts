@@ -1,6 +1,6 @@
 import { UrlCategories, ApiResponse, UrlData } from "~/interfaces";
 
-export default async function (
+export default async function createUrl(
   token: string,
   original_url: string,
   short_url: string,
@@ -17,11 +17,9 @@ export default async function (
 
   const apiResponse = (await res.json()) as ApiResponse<UrlData>;
 
-  const { data } = apiResponse;
-
   if (!res) {
     throw new Error(apiResponse.message || "Error creating url");
   }
 
-  return data;
+  return apiResponse;
 }

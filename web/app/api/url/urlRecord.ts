@@ -21,11 +21,9 @@ export default async function urlRecord(
   );
   const apiResponse = (await res.json()) as ApiResponse<UrlData[]>;
 
-  const { data } = apiResponse;
-
-  if (!res) {
-    throw new Error(apiResponse.message || "Error fetching urls");
+  if (apiResponse.status === "error") {
+    throw new Error(apiResponse.message || "Unknown error occurred");
   }
 
-  return data;
+  return apiResponse;
 }

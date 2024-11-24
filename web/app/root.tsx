@@ -1,20 +1,19 @@
+import React from "react";
+
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import {
-  QueryClientProvider,
-  HydrationBoundary,
-  dehydrate,
-} from "@tanstack/react-query";
+import type { LinksFunction } from "@remix-run/node";
+import { QueryClientProvider, HydrationBoundary } from "@tanstack/react-query";
 import { createQueryClient } from "@utils/queryClient";
 
 import { Toaster } from "react-hot-toast";
+
+import { useDehydratedState } from "use-dehydrated-state";
 
 import "./tailwind.css";
 
@@ -32,15 +31,6 @@ export const links: LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
-
-export const loader: LoaderFunction = async () => {
-  const queryClient = createQueryClient();
-
-  const dehydratedState = dehydrate(queryClient);
-  return Response.json({
-    dehydratedState,
-  });
-};
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -61,11 +51,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  const { dehydratedState } = useLoaderData<{ dehydratedState: unknown }>();
   const queryClient = createQueryClient();
 
+  const [queryClientState] = React.useState(() => queryClient);
+
+  const dehydratedState = useDehydratedState();
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClientState}>
       <HydrationBoundary state={dehydratedState}>
         <Outlet />
         <Toaster />

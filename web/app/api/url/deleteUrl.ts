@@ -1,7 +1,7 @@
 import { ApiResponse } from "~/interfaces";
 
-export default async function (token: string) {
-  const res = await fetch(`http://localhost:8000/api/url`, {
+export default async function deleteUrl(token: string, id: string) {
+  const res = await fetch(`http://localhost:8000/api/url/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

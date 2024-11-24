@@ -5,9 +5,9 @@ import getHexColor from "@utils/hexColors";
 interface QRCodeGeneratorProps {
   url: string;
   canvasRef: React.RefObject<HTMLCanvasElement>;
-  size?: number; // Size of the QR code
-  color?: string; // Foreground color
-  bg?: string; // Background color
+  size?: number;
+  color?: string;
+  bg?: string;
 }
 
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
@@ -17,7 +17,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   color = "black",
   bg = "white",
 }) => {
-  // Memoize processed colors to avoid recalculating them
   const qrColors = useMemo(
     () => ({
       dark: getHexColor(color),
@@ -42,10 +41,8 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           color: qrColors,
         };
 
-        // Generate QR Code Data URL
         const qrDataUrl = await QRCode.toDataURL(url, qrOptions);
 
-        // Draw the QR Code on the Canvas
         const image = new Image();
         image.onload = () => {
           ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear previous drawing
@@ -58,9 +55,9 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     };
 
     generateQRCode();
-  }, [url, canvasRef, size, qrColors]); // Dependencies
+  }, [url, canvasRef, size, qrColors]);
 
-  return null; // No UI rendering is needed for this component
+  return null;
 };
 
 export default QRCodeGenerator;
