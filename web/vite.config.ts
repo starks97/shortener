@@ -31,6 +31,7 @@ export default defineConfig({
       "@api": path.resolve(__dirname, "app/api"),
       "@cookies": path.resolve(__dirname, "app/cookies.server.ts"),
       "@styles": path.resolve(__dirname, "app/styles"),
+      "@proxy": path.resolve(__dirname, "app/proxy"),
     },
   },
 });

@@ -8,7 +8,7 @@ import login from "@api/auth/login";
 import { refreshTokenCookie, accessTokenCookie } from "@cookies";
 import { validationAction } from "@utils/validationAction";
 
-import { LoginFormField } from "~/consts";
+import formDefinitions from "~/formDefinitions";
 
 import FormInput from "@components/FormInput";
 
@@ -86,7 +86,7 @@ export default function Login() {
         <Form method="post" className="space-y-4">
           <FormInput<LoginUserSchemaType>
             actionData={actionData!}
-            formSchema={LoginFormField}
+            formSchema={formDefinitions["login"]}
           >
             <button
               type="submit"

@@ -2,12 +2,7 @@ import React from "react";
 
 import "../styles/global.css";
 
-interface ModalProps {
-  id: string;
-  title: string;
-  children?: React.ReactNode;
-  footer?: React.ReactNode;
-}
+import { ModalProps } from "~/interfaces";
 
 // Use React.forwardRef to handle the `ref` correctly
 const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
@@ -48,7 +43,6 @@ const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
   }
 );
 
-// Add display name for easier debugging in dev tools
 Modal.displayName = "Modal";
 
 export default Modal;

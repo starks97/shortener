@@ -2,13 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import QRCode from "qrcode";
 import getHexColor from "@utils/hexColors";
 
-interface QRCodeGeneratorProps {
-  url: string;
-  canvasRef: React.RefObject<HTMLCanvasElement>;
-  size?: number;
-  color?: string;
-  bg?: string;
-}
+import { QRCodeGeneratorProps } from "~/interfaces";
 
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   url,

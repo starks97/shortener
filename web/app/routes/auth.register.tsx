@@ -2,7 +2,7 @@ import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
 
 import register from "@api/auth/register";
-import { RegisterFormField } from "~/consts";
+import formDefinitions from "~/formDefinitions";
 import {
   RegisterUserSchema,
   RegisterUserSchemaType,
@@ -64,7 +64,7 @@ export default function Register() {
         <Form method="post" className="space-y-4">
           <FormInput<RegisterUserSchemaType>
             actionData={actionData!}
-            formSchema={RegisterFormField}
+            formSchema={formDefinitions["register"]}
           >
             <button
               type="submit"

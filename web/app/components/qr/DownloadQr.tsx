@@ -8,11 +8,11 @@ function downloadStringAsFile(data: string, filename: string) {
   window.URL.revokeObjectURL(data);
 }
 
-interface Props {
+export default function DownLoadQR({
+  canvasRef,
+}: {
   canvasRef: React.RefObject<HTMLCanvasElement>;
-}
-
-export default function DownLoadQR({ canvasRef }: Props) {
+}) {
   const onCanvasBtn = () => {
     const node = canvasRef.current;
     if (!node) {
