@@ -1,7 +1,6 @@
 import React from "react";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { dehydrate } from "@tanstack/react-query";
-
 import { createQueryClient } from "~/utils/queryClient";
 
 import middleware from "../middleware";

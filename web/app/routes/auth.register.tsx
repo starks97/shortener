@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import { useActionData } from "@remix-run/react";
 
 import register from "@api/auth/register";
 import formDefinitions from "~/formDefinitions";
@@ -9,7 +9,7 @@ import {
 } from "@models/auth.models";
 import { ActionData } from "@interfaces";
 
-import FormInput from "@components/FormInput";
+import DynamicForm from "@components/DynamicForm";
 import { validationAction } from "@utils/validationAction";
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -61,19 +61,12 @@ export default function Register() {
           Register
         </h2>
 
-        <Form method="post" className="space-y-4">
-          <FormInput<RegisterUserSchemaType>
-            actionData={actionData!}
-            formSchema={formDefinitions["register"]}
-          >
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Register
-            </button>
-          </FormInput>
-        </Form>
+        <DynamicForm<RegisterUserSchemaType>
+          actionData={actionData!}
+          formSchema={formDefinitions["register"]}
+          method="POST"
+          submitLabel="Register"
+        />
       </div>
     </div>
   );

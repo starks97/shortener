@@ -23,7 +23,6 @@ export interface ApiResponse<T> {
 
 /**
  * Defines the structure for query parameters used in API requests.
- * Includes fields like:
  * - `limit`: The maximum number of records to fetch.
  * - `offset`: The starting point for fetching records.
  * - `category`: The category of URLs, defined by the `UrlCategories` enum.
@@ -68,6 +67,10 @@ export enum UrlCategories {
   Science = "Science",
 }
 
+/**
+ * Represents the response structure when registering a new user.
+ * Fields include user details like `id`, `email`, `name`, and timestamps.
+ */
 export type RegisterData = {
   user: {
     id: string;
@@ -78,6 +81,10 @@ export type RegisterData = {
   };
 };
 
+/**
+ * Defines the structure of the current authenticated user data.
+ * Fields include user details like `id`, `email`, `name`, and timestamps (`createdAt`, `updatedAt`).
+ */
 export type Me = {
   user: {
     createdAt: string;
@@ -88,21 +95,48 @@ export type Me = {
   };
 };
 
+/**
+ * Represents the structure of data returned after a successful login.
+ * Contains the `access_token` used for authenticated requests.
+ */
 export type LoginData = {
   access_token: string;
 };
 
+/**
+ * Alias for `LoginData`, used when refreshing authentication tokens.
+ */
 export type RefreshTokenData = LoginData;
 
-//ZOD FORM VALIDATION
+// Form and Validation Types
+
+/**
+ * Represents error messages for specific form fields.
+ * A dictionary where each key corresponds to a field name, and the value is the error message.
+ */
 export interface FieldErrors {
   [key: string]: string;
 }
 
+/**
+ * Represents data related to form submission actions.
+ * Fields:
+ * - `errors`: Partial dictionary of field errors, optionally including a general error message.
+ */
 export interface ActionData<T> {
   errors?: Partial<Record<keyof T, string>> & { general?: string };
 }
 
+/**
+ * Defines the structure of a single form field.
+ * Fields:
+ * - `name`: Unique identifier for the form field.
+ * - `type`: Type of input field (e.g., `text`, `select`, `password`, etc.).
+ * - `label`: User-friendly label for the form field.
+ * - `placeholder`: Placeholder text for the input field.
+ * - `required`: Indicates whether the field is mandatory.
+ * - `options`: Optional field for dropdowns or select inputs.
+ */
 export interface FormField {
   name: string;
   type: "text" | "select" | "password" | "email";
@@ -112,15 +146,32 @@ export interface FormField {
   options?: { value: string; label: string }[];
 }
 
+/**
+ * Represents the props passed to a form component.
+ * Fields:
+ * - `formSchema`: An array of `FormField` definitions.
+ * - `children`: Optional child components rendered inside the form.
+ * - `actionData`: Contains action-related data like errors.
+ */
 export interface FormProps<T> {
   formSchema: FormField[];
-  children?: React.ReactNode;
   actionData: ActionData<T>;
+  method: string;
+  action?: string; //this field is to define what route should be use to excute the action of the form
+  submitLabel: string;
 }
 
-//PROXY TYPES
+// Proxy and Action Types
+
+/**
+ * Enum-like type defining available actions (`view`, `update`, `delete`, `create`) for proxy interactions.
+ */
 export type SearchType = "view" | "update" | "delete" | "create";
 
+/**
+ * Represents the parameters passed to proxy actions.
+ * Includes fields like `id`, `original_url`, `short_url`, `category`, and pagination fields (`limit`, `offset`).
+ */
 export type ParamRecord = {
   id?: string;
   original_url?: string;
@@ -130,6 +181,14 @@ export type ParamRecord = {
   offset?: string | number;
 };
 
+/**
+ * Maps actions to their expected API response types.
+ * Structure:
+ * - `update`: Returns a single `UrlData` object.
+ * - `view`: Returns an array of `UrlData` objects.
+ * - `delete`: Returns `null`.
+ * - `create`: Returns a single `UrlData` object.
+ */
 export type ActionReturnTypes = {
   update: ApiResponse<UrlData>;
   view: ApiResponse<UrlData[]>;
@@ -137,6 +196,10 @@ export type ActionReturnTypes = {
   create: ApiResponse<UrlData>;
 };
 
+/**
+ * Represents a collection of asynchronous functions for each proxy action.
+ * Each function takes `params` and `token` as arguments and returns a promise resolving to the corresponding `ActionReturnTypes` type.
+ */
 export type ProxyActions = {
   [K in keyof ActionReturnTypes]: (
     params: ParamRecord,
@@ -144,7 +207,16 @@ export type ProxyActions = {
   ) => Promise<ActionReturnTypes[K]>;
 };
 
-//MODAL TYPES
+// Modal Types
+
+/**
+ * Defines the structure of props for modal components.
+ * Fields:
+ * - `id`: Unique identifier for the modal.
+ * - `title`: Title of the modal.
+ * - `children`: Optional child components or content inside the modal.
+ * - `footer`: Optional footer content for the modal.
+ */
 export interface ModalProps {
   id: string;
   title: string;
@@ -152,7 +224,17 @@ export interface ModalProps {
   footer?: React.ReactNode;
 }
 
-//QR GENERATION TYPES
+// QR Code Generation Types
+
+/**
+ * Defines the props for generating QR codes.
+ * Fields:
+ * - `url`: The URL to encode in the QR code.
+ * - `canvasRef`: A reference to the HTML canvas element where the QR code will be drawn.
+ * - `size`: Optional size of the QR code.
+ * - `color`: Optional color for the QR code.
+ * - `bg`: Optional background color for the QR code.
+ */
 export interface QRCodeGeneratorProps {
   url: string;
   canvasRef: React.RefObject<HTMLCanvasElement>;

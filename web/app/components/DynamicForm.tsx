@@ -1,12 +1,14 @@
 import { FormProps } from "~/interfaces";
 
-export default function FormInput<T>({
+export default function DynamicForm<T>({
   formSchema,
-  children,
   actionData,
+  method,
+  action,
+  submitLabel,
 }: FormProps<T>) {
   return (
-    <>
+    <form method={method} action={action} className="space-y-4">
       {actionData.errors?.general && (
         <div className="text-red-500 text-sm mb-4">
           {actionData.errors.general}
@@ -75,7 +77,12 @@ export default function FormInput<T>({
           </div>
         );
       })}
-      {children}
-    </>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+      >
+        {submitLabel}
+      </button>
+    </form>
   );
 }
