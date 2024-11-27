@@ -43,23 +43,19 @@ export async function action({ request }: ActionFunctionArgs) {
     if (response.refreshToken) {
       headers.append(
         "Set-Cookie",
-        await refreshTokenCookie.serialize(response.refreshToken, {
-          sameSite: "lax",
-        })
+        await refreshTokenCookie.serialize(response.refreshToken)
       );
     }
 
     if (response.data?.access_token) {
       headers.append(
         "Set-Cookie",
-        await accessTokenCookie.serialize(response.data.access_token, {
-          sameSite: "lax",
-        })
+        await accessTokenCookie.serialize(response.data.access_token)
       );
     }
 
     if (headers.has("Set-Cookie")) {
-      return redirect("/dashboard", { headers });
+      return redirect("/workspace", { headers });
     }
 
     return Response.json(response.data);

@@ -13,7 +13,7 @@ export default async function middleware(req: Request) {
     const user = await me(accessToken);
     if (user) {
       //return {accesToken}
-      return true;
+      return null;
     }
   }
 

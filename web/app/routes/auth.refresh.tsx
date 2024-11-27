@@ -26,7 +26,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       if (headers.has("Set-Cookie")) {
-        return redirect("/dashboard", { headers });
+        return redirect("/workspace", { headers });
       }
 
       return Response.json(response.data);

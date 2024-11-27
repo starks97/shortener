@@ -6,14 +6,14 @@ export const refreshTokenCookie = createCookie("refresh_token", {
   sameSite: "lax",
   path: "/",
   maxAge: 60 * 60 * 24 * 7,
-  domain: process.env.DOMAIN,
+  ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });
 
 export const accessTokenCookie = createCookie("access_token", {
   secure: false,
   sameSite: "lax",
   path: "/",
-  domain: process.env.DOMAIN,
   maxAge: 60 * 30,
   httpOnly: true,
+  ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });
