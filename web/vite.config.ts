@@ -32,6 +32,7 @@ export default defineConfig({
       "@cookies": path.resolve(__dirname, "app/cookies.server.ts"),
       "@styles": path.resolve(__dirname, "app/styles"),
       "@proxy": path.resolve(__dirname, "app/proxy"),
+      "@middleware": path.resolve(__dirname, "app/middleware.ts"),
     },
   },
 });

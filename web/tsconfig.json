@@ -31,7 +31,8 @@
       "@interfaces": ["app/interfaces.ts"],
       "@cookies": ["app/cookies.server.ts"],
       "@styles": ["app/styles/*"],
-      "@proxy": ["app/proxy/*"]
+      "@proxy": ["app/proxy/*"],
+      "@middleware": ["app/middleware.ts"]
     },
 
     // Vite takes care of building everything, not tsc.

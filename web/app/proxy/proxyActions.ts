@@ -1,8 +1,9 @@
 import { ProxyActions } from "@interfaces";
 import createUrl from "~/api/url/createUrl";
 import deleteUrl from "~/api/url/deleteUrl";
-import urlRecord from "~/api/url/urlRecord";
+import urlRecords from "~/api/url/urlRecords";
 import updateUrl from "~/api/url/updateUrl";
+import urlRecord from "~/api/url/urlRecord";
 
 export const actions: ProxyActions = {
   update: async (params, token) => {
@@ -14,9 +15,14 @@ export const actions: ProxyActions = {
     return await updateUrl(token, id, original_url, short_url, category);
   },
   view: async (params, token) => {
-    const limit = params.limit ? parseInt(params.limit.toString()) : 10;
-    const offset = params.offset ? parseInt(params.offset.toString()) : 0;
-    return await urlRecord(token, limit, offset, params.category);
+    if (params.id) {
+      const { id } = params;
+      return await urlRecord(id, token);
+    } else {
+      const limit = params.limit ? parseInt(params.limit.toString()) : 10;
+      const offset = params.offset ? parseInt(params.offset.toString()) : 0;
+      return await urlRecords(token, limit, offset, params.category);
+    }
   },
   delete: async (params, token) => {
     const { id } = params;

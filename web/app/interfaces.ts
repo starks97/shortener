@@ -191,7 +191,7 @@ export type ParamRecord = {
  */
 export type ActionReturnTypes = {
   update: ApiResponse<UrlData>;
-  view: ApiResponse<UrlData[]>;
+  view: ApiResponse<UrlData[] | UrlData>;
   delete: ApiResponse<null>;
   create: ApiResponse<UrlData>;
 };
