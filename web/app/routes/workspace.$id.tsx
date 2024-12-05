@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { dehydrate } from "@tanstack/react-query";
-import { useLoaderData, useParams } from "@remix-run/react";
+import { useParams } from "@remix-run/react";
 import { createQueryClient } from "~/utils/queryClient";
 
 import middleware from "../middleware";
@@ -23,7 +23,6 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export default function Url() {
-  const data = useLoaderData<typeof loader>();
   const { id } = useParams();
   console.log(id);
 }
