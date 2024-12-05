@@ -216,13 +216,47 @@ export type ProxyActions = {
  * - `title`: Title of the modal.
  * - `children`: Optional child components or content inside the modal.
  * - `footer`: Optional footer content for the modal.
+ * - `close`: close modal.
  */
 export interface ModalProps {
   id: string;
   title: string;
   children?: React.ReactNode;
   footer?: React.ReactNode;
+  close: () => void;
 }
+
+/**
+ * `SearchModalType` is a union type representing possible modes or variants of a "search modal."
+ * In this case, it can be either:
+ * - `"view"`: Represents a standard viewing mode.
+ * - `"qr"`: Represents a mode for displaying or scanning QR codes.
+ */
+export type SearchModalType = "view" | "qr";
+
+/**
+ * `ModalActions` defines a structure that maps each `SearchModalType` to a corresponding
+ * function that handles the behavior of opening or manipulating modal references.
+ *
+ * Both `view` and `qr` functions receive:
+ * - `dialogRef`: A ref to a `HTMLDialogElement` which might be the primary modal dialog.
+ * - `qrModalRef`: A ref to another `HTMLDialogElement` which might be specifically for a QR
+ *    code related modal.
+ *
+ * By having these as functions, you can encapsulate how each modal type is initialized or
+ * presented, possibly performing DOM interactions (such as calling `dialogRef.current?.showModal()`),
+ * fetching data, or modifying state before the modal is displayed.
+ */
+export type ModalActions = {
+  view: (
+    dialogRef: React.RefObject<HTMLDialogElement>,
+    qrModalRef: React.RefObject<HTMLDialogElement>
+  ) => void;
+  qr: (
+    dialogRef: React.RefObject<HTMLDialogElement>,
+    qrModalRef: React.RefObject<HTMLDialogElement>
+  ) => void;
+};
 
 // QR Code Generation Types
 

@@ -4,13 +4,8 @@ import "../styles/global.css";
 
 import { ModalProps } from "~/interfaces";
 
-// Use React.forwardRef to handle the `ref` correctly
 const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
-  ({ id, title, children, footer }, ref) => {
-    const closeDialog = () => {
-      (ref as React.RefObject<HTMLDialogElement>).current?.close();
-    };
-
+  ({ id, title, children, footer, close }, ref) => {
     return (
       <dialog
         id={id}
@@ -20,7 +15,7 @@ const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
         {/* Modal Head */}
         <header className="flex justify-between items-center">
           <span className="text-2xl font-semibold text-gray-200">{title}</span>
-          <button className="p-1" onClick={closeDialog}>
+          <button className="p-1" onClick={close}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="1.5rem"
