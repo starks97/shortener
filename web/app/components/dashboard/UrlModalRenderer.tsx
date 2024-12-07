@@ -1,0 +1,95 @@
+import React, { useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "@remix-run/react";
+import { useQuery } from "@tanstack/react-query";
+import { urlQueryOptions } from "~/utils/queryOptions";
+
+import { SearchModalType } from "@interfaces";
+
+import Modal from "@components/Modal";
+import QRCodeGenerator from "@components/qr/QrGenerator";
+import DownLoadQR from "@components/qr/DownloadQr";
+
+import { modalActions } from "~/utils/modalActions";
+
+import UrlUpdater from "./UrlUpdater";
+
+export default function UrlModalRenderer() {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const dialogRef = React.useRef<HTMLDialogElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  const qrModalRef = React.useRef<HTMLDialogElement>(null);
+
+  const modalQueries = searchParams.get("modal") as SearchModalType | null;
+
+  useEffect(() => {
+    if (!modalQueries) {
+      dialogRef.current?.close();
+      qrModalRef.current?.close();
+      return;
+    }
+
+    modalActions[modalQueries](dialogRef, qrModalRef);
+  }, [modalQueries]);
+
+  const closeModal = () => {
+    navigate("/workspace", { replace: true });
+  };
+
+  const { data, error, isLoading } = useQuery(urlQueryOptions(id!));
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error instanceof Error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <>
+      {data && (
+        <>
+          <Modal
+            id={`modal-${id!}`}
+            title={data.short_url}
+            ref={dialogRef}
+            footer={<button onClick={closeModal}>Close</button>}
+            close={closeModal}
+          >
+            <UrlUpdater
+              category={data.category}
+              id={data.id}
+              original_url={data.original_url}
+              short_url={data.short_url}
+            />
+          </Modal>
+          <Modal
+            id={`qr_modal-${id!}`}
+            title="QR Generator"
+            ref={qrModalRef}
+            footer={<button onClick={closeModal}>Close</button>}
+            close={closeModal}
+          >
+            <QRCodeGenerator
+              canvasRef={canvasRef}
+              url="https://google.com"
+              size={200}
+            />
+            <div className="flex justify-center items-center ">
+              <canvas
+                ref={canvasRef}
+                width={200}
+                height={200}
+                style={{ border: "2px solid orange" }}
+              />
+            </div>
+            <DownLoadQR canvasRef={canvasRef} />
+          </Modal>
+        </>
+      )}
+    </>
+  );
+}

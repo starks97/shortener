@@ -12,8 +12,10 @@ dialog {
     rgba(233, 165, 109, 0.923) 0px 6px 6px;
   padding: 1rem;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
+  width: auto; /* Let the modal size itself based on content */
+  max-width: 90vw; /* Restricts modal to not exceed viewport width */
+  max-height: 90vh; /* Restricts modal to not exceed viewport height */
+  overflow-y: auto; /* Allows scrolling if content is very large */
   margin: auto;
 }
 

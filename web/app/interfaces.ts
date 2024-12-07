@@ -159,6 +159,7 @@ export interface FormProps<T> {
   method: string;
   action?: string; //this field is to define what route should be use to excute the action of the form
   submitLabel: string;
+  className?: string;
 }
 
 // Proxy and Action Types

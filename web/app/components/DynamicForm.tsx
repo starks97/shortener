@@ -6,9 +6,14 @@ export default function DynamicForm<T>({
   method,
   action,
   submitLabel,
+  className,
 }: FormProps<T>) {
   return (
-    <form method={method} action={action} className="space-y-4">
+    <form
+      method={method}
+      action={action}
+      className={`space-y-4 ${className || ""}`}
+    >
       {actionData.errors?.general && (
         <div className="text-red-500 text-sm mb-4">
           {actionData.errors.general}
@@ -40,7 +45,7 @@ export default function DynamicForm<T>({
                   fieldError ? `${field.name}-error` : undefined
                 }
               >
-                <option value="" disabled>
+                <option value={field.placeholder} disabled>
                   {field.placeholder || "Select an option"}
                 </option>
                 {field.options?.map((option) => (
