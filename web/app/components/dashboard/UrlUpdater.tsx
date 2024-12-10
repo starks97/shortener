@@ -1,11 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { UpdateUrlSchemaType, UpdateUrlSchema } from "~/models/url.models";
+import { UpdateUrlSchema } from "~/models/url.models";
 import { validationAction } from "@utils/validationAction";
 import formDefinitions from "~/formDefinitions";
 
-import { UrlCategories } from "~/interfaces";
+import { updateUrl } from "~/utils/queryOptions";
+
+import { UrlCategories, ApiResponse, FieldErrors } from "~/interfaces";
 
 import { OverWriteIcon, CheckIcon, CloseIcon } from "../Icons";
 
@@ -17,11 +19,58 @@ interface Props {
 }
 
 export default function UrlUpdater({ ...props }: Props) {
+  const query = useQueryClient();
   const [fieldBeingEdited, setFieldBeingEdited] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<Record<string, string>>({
     original_url: props.original_url,
     short_url: props.short_url,
     category: props.category,
+  });
+  const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
+
+  const mutation = useMutation<
+    ApiResponse<null>,
+    string,
+    { original_url?: string; short_url?: string; category?: UrlCategories },
+    unknown
+  >({
+    mutationFn: async ({
+      original_url,
+      short_url,
+      category,
+    }): Promise<ApiResponse<null>> => {
+      try {
+        const update = await updateUrl<ApiResponse<null>>(
+          props.id,
+          short_url!,
+          original_url!,
+          category
+        );
+
+        if (update.status === "error") {
+          throw Error(update.message);
+        }
+
+        return update;
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error.message;
+        }
+        throw "An error occurred during updating the url.";
+      }
+    },
+    onMutate: async (variables) => {
+      setFieldBeingEdited(null);
+      setInputValue((prev) => ({ ...prev, ...variables }));
+      setValidationErrors({});
+    },
+    onSuccess: () => {
+      setFieldBeingEdited(null);
+    },
+    onSettled: () => {
+      query.invalidateQueries({ queryKey: ["url", props.id] });
+      query.invalidateQueries({ queryKey: ["urls"] });
+    },
   });
 
   const handleEdit = (fieldName: string) => {
@@ -51,9 +100,35 @@ export default function UrlUpdater({ ...props }: Props) {
     setInputValue((prev) => ({ ...prev, [fieldName]: event.target.value }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setFieldBeingEdited(null);
+    const { data, errors } = await validationAction({
+      formData: inputValue,
+      schema: UpdateUrlSchema,
+    });
+
+    if (errors) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    if (data) {
+      const updateData: {
+        original_url?: string;
+        short_url?: string;
+        category?: UrlCategories;
+      } = {};
+
+      if (fieldBeingEdited === "original_url") {
+        updateData.original_url = data.original_url;
+      } else if (fieldBeingEdited === "short_url") {
+        updateData.short_url = data.short_url;
+      } else if (fieldBeingEdited === "category") {
+        updateData.category = data.category;
+      }
+
+      mutation.mutate(updateData);
+    }
   };
 
   return (
@@ -91,21 +166,43 @@ export default function UrlUpdater({ ...props }: Props) {
                     className="mb-4 flex items-center justify-start w-full"
                     onSubmit={handleSubmit}
                     method="PATCH"
+                    action={`/workspace/${props.id}`}
                   >
+                    {validationErrors?.general && (
+                      <div className="text-red-500 text-sm mb-4">
+                        {validationErrors?.genera}
+                      </div>
+                    )}
                     {field.name !== "category" && (
                       <input
                         type="text"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+                          validationErrors
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
                         value={inputValue[field.name]}
                         onChange={(e) => handleInputChange(e, field.name)}
+                        aria-invalid={!!validationErrors}
+                        aria-describedby={
+                          validationErrors ? `${field.name}-error` : undefined
+                        }
                       />
                     )}
 
                     {field.name === "category" && (
                       <select
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
+                          validationErrors
+                            ? "border-red-500"
+                            : "border-gray-300"
+                        }`}
                         value={inputValue["category"]}
                         onChange={handleCategoryChange}
+                        aria-invalid={!!validationErrors}
+                        aria-describedby={
+                          validationErrors ? `${field.name}-error` : undefined
+                        }
                       >
                         {Object.values(UrlCategories)
                           .filter((category) => category !== UrlCategories.All)

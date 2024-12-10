@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "@remix-run/react";
 import { useQuery } from "@tanstack/react-query";
 import { urlQueryOptions } from "~/utils/queryOptions";
+import { DateConverter } from "~/utils/dateConverter";
 
 import { SearchModalType } from "@interfaces";
 
@@ -65,6 +66,22 @@ export default function UrlModalRenderer() {
               original_url={data.original_url}
               short_url={data.short_url}
             />
+            <div className="flex flex-row w-full mt-4">
+              <span className="text-gray-200 w-1/4">Views</span>
+              <p className="text-gray-200">{data.views}</p>
+            </div>
+            <div className="flex flex-row w-full mt-4">
+              <span className="text-gray-200 w-1/4">Created:</span>
+              <p className="text-gray-200">
+                {DateConverter.formatDateFromString(data.createdAt)}
+              </p>
+            </div>
+            <div className="flex flex-row w-full mt-4">
+              <span className="text-gray-200 w-1/4">Updated</span>
+              <p className="text-gray-200">
+                {DateConverter.formatDateFromString(data.updatedAt)}
+              </p>
+            </div>
           </Modal>
           <Modal
             id={`qr_modal-${id!}`}

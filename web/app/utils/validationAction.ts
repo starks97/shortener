@@ -16,13 +16,12 @@ export function parsedZodError(error: ZodError): FieldErrors {
 }
 
 export async function validationAction<T extends ZodSchema>({
-  request,
+  formData,
   schema,
 }: {
-  request: Request;
+  formData: Record<string, any>;
   schema: T;
 }): Promise<{ data?: z.infer<T>; errors?: FieldErrors }> {
-  const formData = Object.fromEntries(await request.formData());
   try {
     const data = schema.parse(formData);
 
@@ -30,10 +29,9 @@ export async function validationAction<T extends ZodSchema>({
   } catch (error) {
     if (error instanceof ZodError) {
       const errors: FieldErrors = parsedZodError(error);
-      return { data: formData as z.infer<T>, errors };
+      return { errors };
     }
     return {
-      data: formData as z.infer<T>,
       errors: { general: "An unexpected error occurred" },
     };
   }

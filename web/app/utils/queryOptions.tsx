@@ -51,6 +51,59 @@ const fetchUrls = async <
   return apiResponse;
 };
 
+export const updateUrl = async <T extends ApiResponse<null>>(
+  id: string,
+  short_url?: string,
+  original_url?: string,
+  category?: UrlCategories,
+  request?: Request
+): Promise<T> => {
+  let url: string;
+
+  if (!id) {
+    throw new Error("ID is required for updating a URL.");
+  }
+
+  const queryParams = new URLSearchParams({ id });
+  if (short_url) queryParams.append("short_url", short_url);
+  if (original_url) queryParams.append("original_url", original_url); // Corrected parameter name
+  if (category) queryParams.append("category", category);
+
+  url = `/api/proxy?url=update&${queryParams.toString()}`;
+
+  const isServer = typeof window === "undefined";
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+
+  if (isServer && request) {
+    // Construct absolute URL on the server
+    const baseUrl = new URL(request.url).origin;
+    url = `${baseUrl}${url}`;
+
+    // Forward cookies from the incoming request
+    const cookieHeader = request.headers.get("Cookie");
+    if (cookieHeader) {
+      headers["Cookie"] = cookieHeader;
+    }
+  }
+
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers,
+    credentials: "same-origin",
+    body: JSON.stringify({
+      short_url,
+      original_url,
+      category,
+    }),
+  });
+
+  const apiResponse = (await res.json()) as T;
+
+  return apiResponse;
+};
+
 export const urlsQueryOptions = (
   limit: number,
   offset: number,

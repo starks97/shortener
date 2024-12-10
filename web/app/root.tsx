@@ -60,6 +60,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClientState}>
       <HydrationBoundary state={dehydratedState}>
+        <Toaster />
         <Outlet />
       </HydrationBoundary>
     </QueryClientProvider>

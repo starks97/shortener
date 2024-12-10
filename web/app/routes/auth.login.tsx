@@ -13,8 +13,9 @@ import formDefinitions from "~/formDefinitions";
 import DynamicForm from "@components/DynamicForm";
 
 export async function action({ request }: ActionFunctionArgs) {
+  const formData = Object.fromEntries(await request.formData());
   const { data, errors } = await validationAction({
-    request,
+    formData,
     schema: LoginUserSchema,
   });
 
