@@ -12,14 +12,10 @@ export default function UrlCard({ short_url, id, slug }: Props) {
   const redirection = `http://localhost:8000/api/url/redirect/${slug}`;
 
   const handleRedirect = () => {
-    //useUpdateViewsAndRedirect(redirection, props.id).mutate();
     window.open(`${redirection}`, "_blank");
   };
   return (
-    <div
-      id="card"
-      className="bg-yellow-box max-w-sm p-6 border rounded-lg shadow flex items-center space-x-4 flex-col w-full"
-    >
+    <div className="max-w-sm p-6 border-y rounded-2xl flex items-center space-x-4 flex-col w-full h-auto">
       <div className="inline-flex font-medium items-center gap-2">
         <button onClick={() => handleRedirect()} className="text-white text-lg">
           {short_url}
@@ -33,7 +29,7 @@ export default function UrlCard({ short_url, id, slug }: Props) {
           }}
           className="btn-grad"
         >
-          view more...
+          view info..
         </Link>
 
         <Link
@@ -43,7 +39,7 @@ export default function UrlCard({ short_url, id, slug }: Props) {
           }}
           className="btn-grad"
         >
-          qr...
+          QR...
         </Link>
       </div>
     </div>

@@ -18,37 +18,3 @@ dialog {
   overflow-y: auto; /* Allows scrolling if content is very large */
   margin: auto;
 }
-
-#card {
-  position: relative;
-  border: 2px solid transparent;
-  background: linear-gradient(71deg, #080509, #1a171c, #080509);
-  background-clip: padding-box;
-  img {
-    margin-bottom: 32px;
-  }
-}
-
-.bg-yellow-box {
-  position: relative;
-}
-
-.bg-yellow-box::after {
-  position: absolute;
-  top: -1px;
-  bottom: -1px;
-  left: -1px;
-  right: -1px;
-  content: "";
-  z-index: -1;
-  border-radius: 0.5rem;
-}
-
-.bg-yellow-box::after {
-  background: linear-gradient(
-    71deg,
-    #110e0e,
-    rgba(224, 97, 39, 0.8590029761904762) 51%,
-    #110e0e
-  );
-}
