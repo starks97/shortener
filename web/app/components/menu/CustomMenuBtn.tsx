@@ -4,15 +4,17 @@ import { navItems } from "./navItems";
 export default function CustomMenuBtn({
   isLoggedIn,
   handleLogout,
+  canRefresh,
 }: {
   isLoggedIn: boolean;
   handleLogout: () => void;
+  canRefresh: boolean;
 }) {
   const location = useLocation();
   const currentPath = location.pathname;
   return (
     <>
-      {navItems(isLoggedIn).map(({ label, link }) => (
+      {navItems(isLoggedIn, canRefresh).map(({ label, link }) => (
         <li key={label}>
           {label.toLowerCase() === "workspace" &&
           currentPath === "/workspace" ? (

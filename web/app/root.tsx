@@ -15,7 +15,7 @@ import { Toaster } from "react-hot-toast";
 import { useDehydratedState } from "use-dehydrated-state";
 
 import { createQueryClient } from "@utils/queryClient";
-import { accessTokenCookie } from "~/cookies.server";
+import { ACookie, RCookie } from "~/cookies.server";
 
 import stylesheet from "~/tailwind.css?url";
 
@@ -57,17 +57,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const cookie = request.headers.get("Cookie");
-  const token = await accessTokenCookie.parse(cookie);
+  const AToken = await ACookie.parse(cookie);
+  const Rtoken = await RCookie.parse(cookie);
 
-  if (token) {
-    return Response.json({ isLoggedIn: true });
+  if (AToken) {
+    return Response.json({ isLoggedIn: true, canRefresh: false });
   }
 
-  return Response.json({ isLoggedIn: false });
+  if (Rtoken) {
+    return Response.json({ isLoggedIn: false, canRefresh: true });
+  }
+
+  return Response.json({ isLoggedIn: false, canRefresh: false });
 };
 
 export default function App() {
-  const isLoggedIn = useLoaderData<typeof loader>();
+  const { isLoggedIn, canRefresh } = useLoaderData<typeof loader>();
 
   const queryClient = createQueryClient();
 
@@ -79,7 +84,7 @@ export default function App() {
     <QueryClientProvider client={queryClientState}>
       <HydrationBoundary state={dehydratedState}>
         <Toaster />
-        <Menu isLoggedIn={isLoggedIn} />
+        <Menu isLoggedIn={isLoggedIn} canRefresh={canRefresh} />
         <Outlet />
       </HydrationBoundary>
     </QueryClientProvider>

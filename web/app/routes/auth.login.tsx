@@ -5,7 +5,7 @@ import { LoginUserSchema, LoginUserSchemaType } from "@models/auth.models";
 import { ActionData } from "~/interfaces";
 
 import login from "@api/auth/login";
-import { refreshTokenCookie, accessTokenCookie } from "@cookies";
+import { RCookie, ACookie } from "@cookies";
 import { validationAction } from "@utils/validationAction";
 
 import formDefinitions from "~/formDefinitions";
@@ -44,14 +44,14 @@ export async function action({ request }: ActionFunctionArgs) {
     if (response.refreshToken) {
       headers.append(
         "Set-Cookie",
-        await refreshTokenCookie.serialize(response.refreshToken)
+        await RCookie.serialize(response.refreshToken)
       );
     }
 
     if (response.data?.access_token) {
       headers.append(
         "Set-Cookie",
-        await accessTokenCookie.serialize(response.data.access_token)
+        await ACookie.serialize(response.data.access_token)
       );
     }
 

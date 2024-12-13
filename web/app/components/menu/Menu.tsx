@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Link, useNavigate } from "@remix-run/react";
 import CustomMenuBtn from "./CustomMenuBtn";
 
-export default function Menu({ isLoggedIn }: { isLoggedIn: boolean }) {
+export default function Menu({
+  isLoggedIn,
+  canRefresh,
+}: {
+  isLoggedIn: boolean;
+  canRefresh: boolean;
+}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -49,7 +55,11 @@ export default function Menu({ isLoggedIn }: { isLoggedIn: boolean }) {
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex md:space-x-8 items-center">
-          <CustomMenuBtn handleLogout={handleLogout} isLoggedIn={isLoggedIn} />
+          <CustomMenuBtn
+            handleLogout={handleLogout}
+            isLoggedIn={isLoggedIn}
+            canRefresh={canRefresh}
+          />
         </ul>
       </div>
 
@@ -60,6 +70,7 @@ export default function Menu({ isLoggedIn }: { isLoggedIn: boolean }) {
             <CustomMenuBtn
               handleLogout={handleLogout}
               isLoggedIn={isLoggedIn}
+              canRefresh={canRefresh}
             />
           </ul>
         </div>

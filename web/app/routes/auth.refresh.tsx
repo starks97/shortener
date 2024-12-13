@@ -1,13 +1,13 @@
 import { redirect, ActionFunctionArgs } from "@remix-run/node";
 import { Form, useActionData } from "@remix-run/react";
-import { refreshTokenCookie, accessTokenCookie } from "@cookies";
+import { RCookie, ACookie } from "@cookies";
 
 import refresh from "@api/auth/refresh";
 
 export async function action({ request }: ActionFunctionArgs) {
   const getCookie = request.headers.get("Cookie") || "";
 
-  const refreshToken = await refreshTokenCookie.parse(getCookie);
+  const refreshToken = await RCookie.parse(getCookie);
   try {
     if (refreshToken) {
       const response = await refresh(refreshToken);
@@ -19,7 +19,7 @@ export async function action({ request }: ActionFunctionArgs) {
       if (response.data?.access_token) {
         headers.append(
           "Set-Cookie",
-          await accessTokenCookie.serialize(response.data.access_token, {
+          await ACookie.serialize(response.data.access_token, {
             sameSite: "lax",
           })
         );

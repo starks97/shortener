@@ -2,7 +2,7 @@ import { ProxyActions, ActionReturnTypes, SearchType } from "@interfaces";
 
 import { actions } from "./proxyActions";
 
-import { accessTokenCookie } from "~/cookies.server";
+import { ACookie } from "~/cookies.server";
 
 export default async function handlerProxy<T extends keyof ProxyActions>(
   req: Request
@@ -16,7 +16,7 @@ export default async function handlerProxy<T extends keyof ProxyActions>(
 
   const queryParams = Object.fromEntries(url.searchParams.entries());
   const getCookie = req.headers.get("Cookie") || "";
-  const accessToken = await accessTokenCookie.parse(getCookie);
+  const accessToken = await ACookie.parse(getCookie);
   const bodyParams = req.method !== "GET" ? await req.json() : {};
   const params = { ...queryParams, ...bodyParams };
 

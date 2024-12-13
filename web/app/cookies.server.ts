@@ -1,6 +1,6 @@
 import { createCookie } from "@remix-run/node";
 
-export const refreshTokenCookie = createCookie("refresh_token", {
+export const RCookie = createCookie("refresh_token", {
   httpOnly: true,
   secure: false,
   sameSite: "lax",
@@ -9,7 +9,7 @@ export const refreshTokenCookie = createCookie("refresh_token", {
   ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });
 
-export const accessTokenCookie = createCookie("access_token", {
+export const ACookie = createCookie("access_token", {
   secure: false,
   sameSite: "lax",
   path: "/",
