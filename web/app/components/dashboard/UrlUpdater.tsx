@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 import { UpdateUrlSchema } from "~/models/url.models";
 import { validationAction } from "@utils/validationAction";
@@ -64,8 +65,14 @@ export default function UrlUpdater({ ...props }: Props) {
       setInputValue((prev) => ({ ...prev, ...variables }));
       setValidationErrors({});
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      toast.success(data.message!);
       setFieldBeingEdited(null);
+    },
+    onError: (error) => {
+      error
+        ? toast.error(error)
+        : toast.error("An error ocurred while updating the URL.");
     },
     onSettled: () => {
       query.invalidateQueries({ queryKey: ["url", props.id] });
