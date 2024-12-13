@@ -10,3 +10,9 @@ body {
     color-scheme: dark;
   }
 }
+
+@layer components {
+  .menu_btn__a {
+    @apply w-full text-left text-black bg-white border-2 rounded-lg hover:text-white hover:bg-orange-400 hover:border-orange-400 font-medium py-2 px-5 transition duration-200;
+  }
+}

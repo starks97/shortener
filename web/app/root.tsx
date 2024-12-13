@@ -6,21 +6,26 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
 import { QueryClientProvider, HydrationBoundary } from "@tanstack/react-query";
-import { createQueryClient } from "@utils/queryClient";
-
 import { Toaster } from "react-hot-toast";
 
 import { useDehydratedState } from "use-dehydrated-state";
 
-import "./tailwind.css";
+import { createQueryClient } from "@utils/queryClient";
+import { accessTokenCookie } from "~/cookies.server";
+
+import stylesheet from "~/tailwind.css?url";
 
 import "./styles/global.css";
 
+import Menu from "@components/menu/Menu";
+
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  { rel: "stylesheet", href: stylesheet },
   {
     rel: "preconnect",
     href: "https://fonts.gstatic.com",
@@ -50,7 +55,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const cookie = request.headers.get("Cookie");
+  const token = await accessTokenCookie.parse(cookie);
+
+  if (token) {
+    return Response.json({ isLoggedIn: true });
+  }
+
+  return Response.json({ isLoggedIn: false });
+};
+
 export default function App() {
+  const isLoggedIn = useLoaderData<typeof loader>();
+
   const queryClient = createQueryClient();
 
   const [queryClientState] = React.useState(() => queryClient);
@@ -61,6 +79,7 @@ export default function App() {
     <QueryClientProvider client={queryClientState}>
       <HydrationBoundary state={dehydratedState}>
         <Toaster />
+        <Menu isLoggedIn={isLoggedIn} />
         <Outlet />
       </HydrationBoundary>
     </QueryClientProvider>
