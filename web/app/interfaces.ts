@@ -277,3 +277,19 @@ export interface QRCodeGeneratorProps {
   color?: string;
   bg?: string;
 }
+
+// Dashboard Types
+
+export type DynamicDashboardTypeData<K extends keyof any, V> = {
+  [P in K]: V;
+};
+
+export type UrlUpdaterPropsTypes = DynamicDashboardTypeData<
+  "original_url" | "category" | "id" | "short_url",
+  string
+>;
+
+export type UrlCardPropsTypes = DynamicDashboardTypeData<
+  "id" | "short_url" | "slug",
+  string
+>;

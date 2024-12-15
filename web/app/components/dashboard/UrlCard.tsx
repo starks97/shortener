@@ -2,13 +2,9 @@ import "../../styles/global.css";
 
 import { Link } from "@remix-run/react";
 
-interface Props {
-  short_url: string;
-  id: string;
-  slug: string;
-}
+import { UrlCardPropsTypes } from "@interfaces";
 
-export default function UrlCard({ short_url, id, slug }: Props) {
+export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
   const redirection = `http://localhost:8000/api/url/redirect/${slug}`;
 
   const handleRedirect = () => {

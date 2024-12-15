@@ -8,24 +8,27 @@ import formDefinitions from "~/formDefinitions";
 
 import { updateUrl } from "~/utils/queryOptions";
 
-import { UrlCategories, ApiResponse, FieldErrors } from "~/interfaces";
+import {
+  UrlCategories,
+  ApiResponse,
+  FieldErrors,
+  UrlUpdaterPropsTypes,
+} from "~/interfaces";
 
 import { OverWriteIcon, CheckIcon, CloseIcon } from "../Icons";
 
-interface Props {
-  id: string;
-  short_url: string;
-  original_url: string;
-  category: UrlCategories;
-}
-
-export default function UrlUpdater({ ...props }: Props) {
+export default function UrlUpdater({
+  category,
+  id,
+  original_url,
+  short_url,
+}: UrlUpdaterPropsTypes) {
   const query = useQueryClient();
   const [fieldBeingEdited, setFieldBeingEdited] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<Record<string, string>>({
-    original_url: props.original_url,
-    short_url: props.short_url,
-    category: props.category,
+    original_url: original_url,
+    short_url: short_url,
+    category: category,
   });
   const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
 
@@ -42,7 +45,7 @@ export default function UrlUpdater({ ...props }: Props) {
     }): Promise<ApiResponse<null>> => {
       try {
         const update = await updateUrl<ApiResponse<null>>(
-          props.id,
+          id,
           short_url!,
           original_url!,
           category
@@ -75,7 +78,7 @@ export default function UrlUpdater({ ...props }: Props) {
         : toast.error("An error ocurred while updating the URL.");
     },
     onSettled: () => {
-      query.invalidateQueries({ queryKey: ["url", props.id] });
+      query.invalidateQueries({ queryKey: ["url", id] });
       query.invalidateQueries({ queryKey: ["urls"] });
     },
   });
@@ -87,9 +90,9 @@ export default function UrlUpdater({ ...props }: Props) {
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setInputValue({
-      original_url: props.original_url,
-      short_url: props.short_url,
-      category: props.category,
+      original_url: original_url,
+      short_url: short_url,
+      category: category,
     });
     setFieldBeingEdited(null);
   };
@@ -173,7 +176,7 @@ export default function UrlUpdater({ ...props }: Props) {
                     className="mb-4 flex items-center justify-start w-full"
                     onSubmit={handleSubmit}
                     method="PATCH"
-                    action={`/workspace/${props.id}`}
+                    action={`/workspace/${id}`}
                   >
                     {validationErrors?.general && (
                       <div className="text-red-500 text-sm mb-4">
