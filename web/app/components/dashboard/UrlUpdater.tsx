@@ -6,7 +6,7 @@ import { UpdateUrlSchema } from "~/models/url.models";
 import { validationAction } from "@utils/validationAction";
 import formDefinitions from "~/formDefinitions";
 
-import { updateUrl } from "~/utils/queryOptions";
+import { updateUrl } from "~/utils/proxyClient";
 
 import {
   UrlCategories,
@@ -147,6 +147,7 @@ export default function UrlUpdater({
         <div className="flex flex-col align-start">
           {formDefinitions["url"].map((field) => {
             const fieldValue = inputValue[field.name];
+
             const displayValue =
               fieldValue.length > 30
                 ? `${fieldValue.slice(0, 20)}...`

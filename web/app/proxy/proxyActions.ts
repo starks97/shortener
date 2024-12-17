@@ -4,6 +4,7 @@ import deleteUrl from "~/api/url/deleteUrl";
 import urlRecords from "~/api/url/urlRecords";
 import updateUrl from "~/api/url/updateUrl";
 import urlRecord from "~/api/url/urlRecord";
+import me from "~/api/auth/me";
 
 export const actions: ProxyActions = {
   update: async (params, token) => {
@@ -37,5 +38,8 @@ export const actions: ProxyActions = {
       );
     }
     return await createUrl(token, original_url, short_url, category);
+  },
+  me: async (_, token) => {
+    return await me(token);
   },
 };

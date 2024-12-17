@@ -1,86 +1,53 @@
-export type FetcherProps = {
-  bodyParams: Record<string, any>;
-  req?: Request;
-  method: string;
-  url: URL | string;
-  bearerToken?: string;
-  queryParams?: Record<string, any>;
-  id?: string;
-};
+import { DynamicFetcherProps } from "~/interfaces";
 
 export default async function dynamicFetcher<T>({
-  bodyParams,
-  req,
+  searchMethodParam,
+  searchActionParam,
   method,
-  url,
-  bearerToken,
+  body,
   queryParams,
-  id,
-}: FetcherProps): Promise<T> {
-  let finalUrl = url instanceof URL ? url.href : url;
-
-  // Check if running on the server
+  request,
+}: DynamicFetcherProps): Promise<T> {
   const isServer = typeof window === "undefined";
 
-  // Initialize headers
+  // Construct query string
+  const urlParams = new URLSearchParams();
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        urlParams.append(key, String(value));
+      }
+    }
+  }
+  let url = `/api/proxy?${searchMethodParam}=${searchActionParam}`;
+  if (urlParams.toString()) {
+    url += `&${urlParams.toString()}`;
+  }
+
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };
 
-  if (bearerToken) {
-    headers["Authorization"] = `Bearer ${bearerToken}`;
-  }
-
-  if (isServer && req) {
-    // Construct absolute URL on the server
-    const baseUrl = new URL(req.url).origin;
-    finalUrl = `${baseUrl}${finalUrl}`;
-
-    // Forward cookies from the incoming request
-    const cookieHeader = req.headers.get("Cookie");
+  if (isServer && request) {
+    const baseUrl = new URL(request.url).origin;
+    url = `${baseUrl}${url}`;
+    const cookieHeader = request.headers.get("Cookie");
     if (cookieHeader) {
       headers["Cookie"] = cookieHeader;
     }
   }
 
-  if (method === "GET" && queryParams) {
-    // Add query parameters for GET requests
-    finalUrl = addQueryParams(finalUrl, queryParams);
-  }
-
-  if (id) {
-    finalUrl = addIdToUrl(finalUrl, id);
-  }
-
-  // Make the fetch request
-  const response = await fetch(finalUrl, {
+  const fetchOptions: RequestInit = {
     method,
     headers,
-    body: method === "GET" ? undefined : JSON.stringify(bodyParams), // No body for GET requests
-    credentials: "include",
-  });
+    credentials: "same-origin",
+  };
 
-  // Check for HTTP errors
-  if (!response.ok) {
-    throw new Error(`Error: ${response.status} ${response.statusText}`);
+  if (body && (method === "POST" || method === "PATCH")) {
+    fetchOptions.body = JSON.stringify(body);
   }
 
-  // Parse and return the JSON response as type T
-  return response.json() as Promise<T>;
-}
-
-function addQueryParams(url: string, queryParams: Record<string, any>) {
-  const urlObj = new URL(url);
-
-  Object.entries(queryParams).forEach(([key, value]) => {
-    if (value !== undefined && value !== null) {
-      urlObj.searchParams.append(key, String(value));
-    }
-  });
-
-  return urlObj.toString();
-}
-
-function addIdToUrl(url: string, id: string): string {
-  return `${url.replace(/\/$/, "")}/${id}`;
+  const res = await fetch(url, fetchOptions);
+  const apiResponse = (await res.json()) as T;
+  return apiResponse;
 }

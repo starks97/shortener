@@ -167,7 +167,18 @@ export interface FormProps<T> {
 /**
  * Enum-like type defining available actions (`view`, `update`, `delete`, `create`) for proxy interactions.
  */
-export type SearchType = "view" | "update" | "delete" | "create";
+export type SearchActionParamType =
+  | "view"
+  | "update"
+  | "delete"
+  | "create"
+  | "me";
+
+export enum SearchMethodParams {
+  URL = "url",
+  AUTH = "auth",
+  USERS = "users",
+}
 
 /**
  * Represents the parameters passed to proxy actions.
@@ -195,6 +206,7 @@ export type ActionReturnTypes = {
   view: ApiResponse<UrlData[] | UrlData>;
   delete: ApiResponse<null>;
   create: ApiResponse<UrlData>;
+  me: ApiResponse<Me>;
 };
 
 /**
@@ -251,12 +263,13 @@ export type SearchModalType = "view" | "qr";
 export type ModalActions = {
   view: (
     dialogRef: React.RefObject<HTMLDialogElement>,
-    qrModalRef: React.RefObject<HTMLDialogElement>
+    qrModalRef?: React.RefObject<HTMLDialogElement>
   ) => void;
   qr: (
     dialogRef: React.RefObject<HTMLDialogElement>,
-    qrModalRef: React.RefObject<HTMLDialogElement>
+    qrModalRef?: React.RefObject<HTMLDialogElement>
   ) => void;
+  create: (dialogRef: React.RefObject<HTMLDialogElement>) => void;
 };
 
 // QR Code Generation Types
@@ -293,3 +306,14 @@ export type UrlCardPropsTypes = DynamicDashboardTypeData<
   "id" | "short_url" | "slug",
   string
 >;
+
+//dynamic fetcher
+
+export interface DynamicFetcherProps {
+  searchMethodParam: SearchMethodParams;
+  searchActionParam: SearchActionParamType;
+  method: "GET" | "POST" | "PATCH";
+  queryParams?: Record<string, string | undefined>;
+  body?: Record<string, unknown>;
+  request?: Request;
+}
