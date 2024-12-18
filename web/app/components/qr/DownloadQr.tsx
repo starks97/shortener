@@ -16,6 +16,8 @@
  * ```
  */
 
+import { QRIcon } from "../Icons";
+
 function downloadStringAsFile(data: string, filename: string) {
   const a = document.createElement("a");
   a.download = filename;
@@ -93,7 +95,7 @@ export default function DownLoadQR({
         onClick={onCanvasBtn}
         style={{ color: "white", fontSize: "2rem" }}
       >
-        download
+        <QRIcon />
       </button>
     </>
   );
