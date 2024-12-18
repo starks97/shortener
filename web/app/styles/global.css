@@ -6,6 +6,8 @@ dialog::backdrop {
 }
 
 dialog {
+  position: relative;
+  overflow: hidden;
   background-color: rgba(0, 0, 0, 0.95);
   border: 2px solid #f96d00;
   box-shadow: rgba(152, 99, 30, 0.844) 0px 10px 20px,

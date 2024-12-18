@@ -92,7 +92,7 @@ export default function UrlModalRenderer() {
           >
             <QRCodeGenerator
               canvasRef={canvasRef}
-              url="https://google.com"
+              url={`http://localhost:8000/api/url/redirect/${data.slug}`}
               size={200}
             />
             <div className="flex justify-center items-center ">

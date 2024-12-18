@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const result = await handlerProxy(request);
-    return result;
+    return Response.json(result, { status: 200 });
   } catch (error) {
     console.error(error);
     return Response.json(
