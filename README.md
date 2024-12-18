@@ -1,4 +1,4 @@
-# Shortener
+# ByteTrim
 
 A custom URL shortener built with Rust for the backend and Remix for the frontend. This application provides a secure and efficient system for creating shortened URLs, managing user sessions with a refresh token mechanism, and offering a user-friendly interface.
 
