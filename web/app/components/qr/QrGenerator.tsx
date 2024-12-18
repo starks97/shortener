@@ -4,6 +4,61 @@ import getHexColor from "@utils/hexColors";
 
 import { QRCodeGeneratorProps } from "~/interfaces";
 
+/**
+ * A React component that generates and renders a QR code on a canvas element.
+ *
+ * The `QRCodeGenerator` component takes a URL and renders its corresponding QR code onto a provided `<canvas>` element.
+ * It allows customization of the QR code's size, foreground color, and background color. The component leverages
+ * `useMemo` to optimize color calculations and `useEffect` to handle the QR code generation and rendering lifecycle.
+ *
+ * @template T - The type of the form data or any additional data associated with the QR code generation.
+ *
+ * @param props - The properties passed to the `QRCodeGenerator` component.
+ * @param props.url - The URL to be encoded into the QR code. This should be a valid URL string.
+ * @param props.canvasRef - A `React.RefObject` pointing to the `<canvas>` element where the QR code will be rendered.
+ * @param props.size - (Optional) The width and height of the QR code in pixels. Defaults to `200`.
+ * @param props.color - (Optional) The color of the QR code's dark modules. Accepts any valid CSS color string. Defaults to `"black"`.
+ * @param props.bg - (Optional) The background color of the QR code. Accepts any valid CSS color string. Defaults to `"white"`.
+ *
+ * @returns `null`. This component does not render any JSX elements itself but manipulates the provided canvas element directly.
+ *
+ * @example
+ * ```tsx
+ * import React, { useRef } from 'react';
+ * import QRCodeGenerator from './QRCodeGenerator';
+ *
+ * const App = () => {
+ *   const canvasRef = useRef<HTMLCanvasElement>(null);
+ *
+ *   return (
+ *     <div>
+ *       <canvas ref={canvasRef} width={200} height={200}></canvas>
+ *       <QRCodeGenerator
+ *         url="https://www.example.com"
+ *         canvasRef={canvasRef}
+ *         size={200}
+ *         color="blue"
+ *         bg="yellow"
+ *       />
+ *     </div>
+ *   );
+ * };
+ *
+ * export default App;
+ * ```
+ *
+ * @example
+ * ```tsx
+ * // Using default size and colors
+ * <QRCodeGenerator
+ *   url="https://www.openai.com"
+ *   canvasRef={canvasRef}
+ * />
+ * ```
+ *
+ * @component
+ */
+
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   url,
   canvasRef,

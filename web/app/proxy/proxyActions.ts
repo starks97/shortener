@@ -6,6 +6,11 @@ import updateUrl from "~/api/url/updateUrl";
 import urlRecord from "~/api/url/urlRecord";
 import me from "~/api/auth/me";
 
+/**
+ * A collection of asynchronous functions mapped to their respective proxy actions.
+ * Each function accepts a `@params` object and a `@token` string, and returns a promise
+ * that resolves to a corresponding `ActionReturnTypes` object.
+ */
 export const actions: ProxyActions = {
   update: async (params, token) => {
     const { id, original_url, short_url, category } = params;
@@ -15,6 +20,7 @@ export const actions: ProxyActions = {
       );
     return await updateUrl(token, id, original_url, short_url, category);
   },
+
   view: async (params, token) => {
     if (params.id) {
       const { id } = params;
@@ -25,11 +31,13 @@ export const actions: ProxyActions = {
       return await urlRecords(token, limit, offset, params.category);
     }
   },
+
   delete: async (params, token) => {
     const { id } = params;
     if (!id) throw new Error("Missing required parameter: id");
     return await deleteUrl(token, id);
   },
+
   create: async (params, token) => {
     const { original_url, short_url, category } = params;
     if (!original_url || !short_url || !category) {
@@ -39,6 +47,7 @@ export const actions: ProxyActions = {
     }
     return await createUrl(token, original_url, short_url, category);
   },
+
   me: async (_, token) => {
     return await me(token);
   },

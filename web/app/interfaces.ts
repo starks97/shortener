@@ -312,7 +312,7 @@ export type UrlCardPropsTypes = DynamicDashboardTypeData<
 export interface DynamicFetcherProps {
   searchMethodParam: SearchMethodParams;
   searchActionParam: SearchActionParamType;
-  method: "GET" | "POST" | "PATCH";
+  method: "GET" | "POST" | "PATCH" | "DELETE";
   queryParams?: Record<string, string | undefined>;
   body?: Record<string, unknown>;
   request?: Request;

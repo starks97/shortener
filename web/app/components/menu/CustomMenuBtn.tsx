@@ -1,6 +1,33 @@
 import { Link, useLocation } from "@remix-run/react";
 import { baseNavItems } from "./navItems";
 
+/**
+ * Renders a dynamic navigation menu based on user authentication status and current route.
+ *
+ * The `CustomMenuBtn` component generates navigation items by evaluating:
+ * - `isLoggedIn`: Whether the user is authenticated.
+ * - `canRefresh`: Whether to include refresh-related options.
+ * - `currentPath`: The current URL path.
+ *
+ * Depending on these props, it conditionally displays links like "Profile," "New Url," "Login," or a "Logout" button.
+ *
+ * @param props - Properties for the CustomMenuBtn component.
+ * @param props.isLoggedIn - Indicates if the user is authenticated.
+ * @param props.handleLogout - Function to handle user logout.
+ * @param props.canRefresh - Determines if refresh options should be available.
+ *
+ * @returns A list of navigation items tailored to the user's state and current location.
+ *
+ * @example
+ * ```tsx
+ * <CustomMenuBtn
+ *   isLoggedIn={true}
+ *   handleLogout={handleLogoutFunction}
+ *   canRefresh={true}
+ * />
+ * ```
+ */
+
 export default function CustomMenuBtn({
   isLoggedIn,
   handleLogout,

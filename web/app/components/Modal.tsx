@@ -4,6 +4,65 @@ import "../styles/global.css";
 
 import { ModalProps } from "~/interfaces";
 
+/**
+ * A customizable modal dialog component built with React.
+ *
+ * This component leverages the native HTML `<dialog>` element to create a modal interface.
+ * It includes a header with a title and a close button, a body for displaying content, and an
+ * optional footer for additional actions or information. The modal can be controlled
+ * programmatically via refs.
+ *
+ * @param props - The properties passed to the Modal component.
+ * @param props.id - A unique identifier for the modal dialog.
+ * @param props.title - The title text displayed in the modal header.
+ * @param props.children - The content to be rendered inside the modal body.
+ * @param props.footer - Optional content to be rendered in the modal footer, typically used for action buttons.
+ * @param props.close - A callback function to close the modal.
+ *
+ * @example
+ * ```tsx
+ * import React, { useRef } from 'react';
+ * import Modal from './Modal';
+ *
+ * const App = () => {
+ *   const modalRef = useRef<HTMLDialogElement>(null);
+ *
+ *   const openModal = () => {
+ *     modalRef.current?.showModal();
+ *   };
+ *
+ *   const closeModal = () => {
+ *     modalRef.current?.close();
+ *   };
+ *
+ *   return (
+ *     <div>
+ *       <button onClick={openModal}>Open Modal</button>
+ *       <Modal
+ *         id="example-modal"
+ *         title="Example Modal"
+ *         ref={modalRef}
+ *         close={closeModal}
+ *         footer={
+ *           <button onClick={closeModal} className="btn btn-primary">
+ *             Close
+ *           </button>
+ *         }
+ *       >
+ *         <p>This is the content of the modal.</p>
+ *       </Modal>
+ *     </div>
+ *   );
+ * };
+ *
+ * export default App;
+ * ```
+ *
+ * @component
+ *
+ * @returns A React `<dialog>` element representing the modal.
+ */
+
 const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
   ({ id, title, children, footer, close }, ref) => {
     return (

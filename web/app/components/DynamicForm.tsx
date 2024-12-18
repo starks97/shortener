@@ -1,5 +1,69 @@
 import { FormProps } from "~/interfaces";
 
+/**
+ * A dynamic and reusable form component built with React.
+ *
+ * The `DynamicForm` component generates form fields based on a provided schema and handles
+ * validation errors. It supports various input types, including text inputs and select dropdowns,
+ * and displays error messages when validation fails. This component is highly customizable
+ * and can be styled using the `className` prop.
+ *
+ * @template T - The shape of the form data, inferred from the provided schema.
+ *
+ * @param props - The properties required to render and manage the form.
+ * @param props.formSchema - An array defining the structure of the form fields. Each field
+ *   should include properties such as `name`, `label`, `type`, `required`, `placeholder`, and
+ *   optionally `options` for select fields.
+ * @param props.actionData - An object containing any validation errors or additional data
+ *   returned from the form submission action. Errors should be keyed by field name.
+ * @param props.method - The HTTP method to be used when submitting the form (e.g., "GET", "POST").
+ * @param props.action - The URL or endpoint where the form data should be submitted.
+ * @param props.submitLabel - The label text displayed on the submit button.
+ * @param props.className - Optional additional CSS classes to apply to the form for styling purposes.
+ *
+ * @returns A React `<form>` element containing dynamically generated input fields, error messages, and a submit button.
+ *
+ * @example
+ * ```tsx
+ * import React from 'react';
+ * import DynamicForm from './DynamicForm';
+ * import { z } from 'zod';
+ *
+ * const formSchema = [
+ *   { name: 'username', label: 'Username', type: 'text', required: true, placeholder: 'Enter your username' },
+ *   { name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'Enter your email' },
+ *   { name: 'role', label: 'Role', type: 'select', required: true, placeholder: 'Select a role', options: [
+ *     { label: 'User', value: 'user' },
+ *     { label: 'Admin', value: 'admin' },
+ *   ] },
+ * ];
+ *
+ * const actionData = {
+ *   errors: {
+ *     username: "Username is required",
+ *     email: "Invalid email address",
+ *   }
+ * };
+ *
+ * const App = () => {
+ *   return (
+ *     <DynamicForm
+ *       formSchema={formSchema}
+ *       actionData={actionData}
+ *       method="POST"
+ *       action="/api/register"
+ *       submitLabel="Register"
+ *       className="max-w-lg mx-auto p-4"
+ *     />
+ *   );
+ * };
+ *
+ * export default App;
+ * ```
+ *
+ * @component
+ */
+
 export default function DynamicForm<T>({
   formSchema,
   actionData,
