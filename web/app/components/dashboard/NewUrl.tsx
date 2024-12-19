@@ -177,7 +177,7 @@ export default function NewUrl() {
         <button
           type="submit"
           disabled={mutation.isPending}
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+          className="w-full bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black py-2 px-4 rounded "
         >
           {mutation.isPending ? "Creating..." : "Create URL"}
         </button>

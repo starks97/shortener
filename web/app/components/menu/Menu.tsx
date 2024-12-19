@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "@remix-run/react";
 import CustomMenuBtn from "./CustomMenuBtn";
+import { ByteTrimLogo } from "../Icons";
 
 export default function Menu({
   isLoggedIn,
@@ -21,9 +22,13 @@ export default function Menu({
     <nav className="bg-transparent border-b border-gray-200 px-5 py-3 mb-5">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo or site title */}
-        <div className="flex-shrink-0">
-          <Link to="/" className="text-xl font-bold text-white">
-            MyApp
+        <div className="flex-shrink-0 group-hover:text-white">
+          <Link
+            to="/"
+            className="text-xl font-bold text-orange-400 flex items-center "
+          >
+            <ByteTrimLogo />
+            ByteTrim
           </Link>
         </div>
 

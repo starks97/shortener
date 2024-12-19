@@ -16,7 +16,8 @@
  * ```
  */
 
-import { QRIcon } from "../Icons";
+import { DownloadIcon } from "../Icons";
+import ToolTip from "../ToolTip";
 
 function downloadStringAsFile(data: string, filename: string) {
   const a = document.createElement("a");
@@ -91,12 +92,14 @@ export default function DownLoadQR({
 
   return (
     <>
-      <button
-        onClick={onCanvasBtn}
-        style={{ color: "white", fontSize: "2rem" }}
-      >
-        <QRIcon />
-      </button>
+      <ToolTip label="download ">
+        <button
+          onClick={onCanvasBtn}
+          style={{ color: "white", fontSize: "2rem" }}
+        >
+          <DownloadIcon />
+        </button>
+      </ToolTip>
     </>
   );
 }
