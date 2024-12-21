@@ -47,7 +47,7 @@ export default function NewUrl() {
   const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
 
   const closeModal = () => {
-    navigate("/workspace", { replace: true });
+    navigate(-1);
   };
 
   const mutation = useMutation<

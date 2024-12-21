@@ -4,6 +4,8 @@ import { RCookie, ACookie } from "@cookies";
 
 import refresh from "@api/auth/refresh";
 
+import { initialState } from "~/consts";
+
 export async function action({ request }: ActionFunctionArgs) {
   const getCookie = request.headers.get("Cookie") || "";
 
@@ -26,7 +28,9 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       if (headers.has("Set-Cookie")) {
-        return redirect("/workspace", { headers });
+        return redirect("/workspace?offset=1&limit=10&category=All", {
+          headers,
+        });
       }
 
       return Response.json(response.data);

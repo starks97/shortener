@@ -8,6 +8,8 @@ import formDefinitions from "~/formDefinitions";
 
 import { updateUrl } from "~/utils/proxyClient";
 
+import CustomDropdown from "../CustomDropDown";
+
 import {
   UrlCategories,
   ApiResponse,
@@ -28,7 +30,7 @@ export default function UrlUpdater({
   const [inputValue, setInputValue] = useState<Record<string, string>>({
     original_url: original_url,
     short_url: short_url,
-    category: category,
+    category: category as UrlCategories,
   });
   const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
 
@@ -97,10 +99,8 @@ export default function UrlUpdater({
     setFieldBeingEdited(null);
   };
 
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setInputValue((prev) => ({ ...prev, category: event.target.value }));
+  const handleCtgChange = (selectedCategory: UrlCategories) => {
+    setInputValue((prev) => ({ ...prev, category: selectedCategory }));
   };
 
   const handleInputChange = (
@@ -202,27 +202,11 @@ export default function UrlUpdater({
                     )}
 
                     {field.name === "category" && (
-                      <select
-                        className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                          validationErrors
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                        value={inputValue["category"]}
-                        onChange={handleCategoryChange}
-                        aria-invalid={!!validationErrors}
-                        aria-describedby={
-                          validationErrors ? `${field.name}-error` : undefined
-                        }
-                      >
-                        {Object.values(UrlCategories)
-                          .filter((category) => category !== UrlCategories.All)
-                          .map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                      </select>
+                      <CustomDropdown
+                        label="Category"
+                        selectedCategory={category as UrlCategories}
+                        onSelectCategory={handleCtgChange}
+                      />
                     )}
 
                     <button

@@ -36,7 +36,7 @@ export default function UrlModalRenderer() {
   }, [modalQueries]);
 
   const closeModal = () => {
-    navigate("/workspace", { replace: true });
+    navigate(-1);
   };
 
   const { data, error, isLoading } = useQuery(urlQueryOptions(id!));
