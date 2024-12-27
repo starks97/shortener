@@ -25,9 +25,18 @@ export default function Dashboard({
     return <div>Error: {error.message}</div>;
   }
 
+  const dataLength = data?.length;
+
   return (
     <>
-      <FilterAndPag category={category} limit={limit} offset={offset} />
+      {data && (
+        <FilterAndPag
+          category={category}
+          limit={limit}
+          offset={offset}
+          dataLength={dataLength!}
+        />
+      )}
       <div className="grid gid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center w-full p-10 ">
         {isLoading
           ? Array.from({ length: limit }).map((_, index) => (

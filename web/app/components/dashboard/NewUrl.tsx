@@ -8,6 +8,8 @@ import { validationAction } from "~/utils/validationAction";
 
 import { CreateUrlSchema } from "@models/url.models";
 
+import { navigateWorkSpace } from "~/consts";
+
 import { modalActions } from "~/utils/modalActions";
 import {
   ApiResponse,
@@ -113,7 +115,7 @@ export default function NewUrl() {
 
     mutation.mutate(data!);
 
-    navigate("/workspace", { replace: true });
+    navigate(navigateWorkSpace, { replace: true });
   };
 
   return (
@@ -137,7 +139,7 @@ export default function NewUrl() {
                 value={inputValue[field.name] || ""}
                 onChange={(e) => handleInputChange(field.name, e.target.value)}
                 className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                  validationErrors ? "border-red-500" : "border-gray-300"
+                  validationErrors ? "border-red-500 " : "border-gray-300"
                 }`}
                 aria-invalid={!!validationErrors}
                 aria-describedby={

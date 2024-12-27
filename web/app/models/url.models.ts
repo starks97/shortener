@@ -7,8 +7,8 @@ export const CreateUrlSchema = z.object({
     .string({
       description: "short url must be provide, please provide at lease a name",
     })
-    .min(5)
-    .max(30),
+    .min(5, { message: "Custom Short Url must contain at least 5 characters." })
+    .max(30, { message: "Custom Short Url must contain max 5 characters." }),
   category: z.nativeEnum(UrlCategories),
 });
 

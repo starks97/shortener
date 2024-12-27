@@ -3,8 +3,7 @@ import { Form, useActionData } from "@remix-run/react";
 import { RCookie, ACookie } from "@cookies";
 
 import refresh from "@api/auth/refresh";
-
-import { initialState } from "~/consts";
+import { workspace } from "~/consts";
 
 export async function action({ request }: ActionFunctionArgs) {
   const getCookie = request.headers.get("Cookie") || "";
@@ -28,7 +27,7 @@ export async function action({ request }: ActionFunctionArgs) {
       }
 
       if (headers.has("Set-Cookie")) {
-        return redirect("/workspace?offset=1&limit=10&category=All", {
+        return redirect(workspace, {
           headers,
         });
       }
@@ -43,7 +42,7 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function Refresh() {
-  const data = useActionData<typeof action>();
+  //const data = useActionData<typeof action>();
 
   return (
     <div>

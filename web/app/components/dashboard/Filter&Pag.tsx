@@ -6,10 +6,12 @@ export default function FilterAndPag({
   offset,
   limit,
   category,
+  dataLength,
 }: {
   offset: number;
   limit: number;
   category: UrlCategories;
+  dataLength: number;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -43,6 +45,7 @@ export default function FilterAndPag({
         </button>
         <span className="border-b border-orange-400">{offset}</span>
         <button
+          disabled={dataLength < limit}
           onClick={() => handlePageChange(offset + 1)}
           className="px-5 py-3 border border-orange-400 rounded-lg"
         >

@@ -1,5 +1,23 @@
-import { UrlCategories } from "./interfaces";
-
-export const baseUrl = process.env.BASE_URL ?? "";
+//export const baseUrl = process.env.BASE_URL ?? "";
 
 export const workspace = `/workspace?offset=1&limit=10&category=All`;
+
+export const navigateWorkSpace = {
+  pathname: "/workspace",
+  search: "?offset=1&limit=10&category=All",
+};
+
+export const modalNavigateActions = {
+  view: (id: string) => {
+    return {
+      pathname: `/workspace/${id}`,
+      search: "?modal=view",
+    };
+  },
+  qr: (id: string) => {
+    return {
+      pathname: `/workspace/${id}`,
+      search: "?modal=qr",
+    };
+  },
+};

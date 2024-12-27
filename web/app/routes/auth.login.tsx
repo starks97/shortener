@@ -11,6 +11,7 @@ import { validationAction } from "@utils/validationAction";
 import formDefinitions from "~/formDefinitions";
 
 import DynamicForm from "@components/DynamicForm";
+import { workspace } from "~/consts";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData());
@@ -56,7 +57,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
 
     if (headers.has("Set-Cookie")) {
-      return redirect("/workspace", { headers });
+      return redirect(workspace, { headers });
     }
 
     return Response.json(response.data);
