@@ -72,7 +72,7 @@ const Modal = React.forwardRef<HTMLDialogElement, ModalProps>(
         className="rounded-lg shadow-xl w-full mx-4 md:mx-auto md:max-w-md p-5"
       >
         {/* Modal Head */}
-        <header className="flex justify-between items-center border-b border-orange-400 px-5 ">
+        <header className="flex justify-between items-center border-b border-orange-400 px-5">
           <span className="text-2xl font-semibold text-gray-200">{title}</span>
           <button className="p-1" onClick={close}>
             <svg

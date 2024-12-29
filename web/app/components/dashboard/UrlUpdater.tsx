@@ -204,9 +204,17 @@ export default function UrlUpdater({
                     {field.name === "category" && (
                       <CustomDropdown
                         label="Category"
-                        selectedCategory={category as UrlCategories}
+                        selectedCategory={
+                          inputValue["category"] as UrlCategories
+                        }
                         onSelectCategory={handleCtgChange}
                       />
+                    )}
+
+                    {validationErrors.fieldError && (
+                      <div className="text-red-500 text-sm mb-4">
+                        {validationErrors.fieldError}
+                      </div>
                     )}
 
                     <button
