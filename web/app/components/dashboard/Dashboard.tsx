@@ -5,6 +5,7 @@ import { urlsQueryOptions } from "~/utils/queryOptions";
 import UrlCard from "./UrlCard";
 import SkeletonUrlCard from "./UrlSkeleton";
 import FilterAndPag from "./Filter&Pag";
+import NoData from "../NoData";
 
 export default function Dashboard({
   offset,
@@ -37,21 +38,29 @@ export default function Dashboard({
           dataLength={dataLength!}
         />
       )}
-      <div className="grid gid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center w-full p-10 ">
-        {isLoading
-          ? Array.from({ length: limit }).map((_, index) => (
-              <SkeletonUrlCard key={index} />
-            ))
-          : data
-          ? data.map((url) => (
-              <UrlCard
-                id={url.id}
-                short_url={url.short_url}
-                key={url.id}
-                slug={url.slug}
-              />
-            ))
-          : null}
+      <div
+        className={
+          data && data.length
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center w-full p-10"
+            : "flex w-full p-10"
+        }
+      >
+        {isLoading ? (
+          Array.from({ length: limit }).map((_, index) => (
+            <SkeletonUrlCard key={index} />
+          ))
+        ) : data && data.length ? (
+          data.map((url) => (
+            <UrlCard
+              id={url.id}
+              short_url={url.short_url}
+              key={url.id}
+              slug={url.slug}
+            />
+          ))
+        ) : (
+          <NoData />
+        )}
       </div>
     </>
   );

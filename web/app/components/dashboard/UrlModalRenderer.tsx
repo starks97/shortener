@@ -103,7 +103,7 @@ export default function UrlModalRenderer() {
                 style={{ border: "2px solid orange" }}
               />
             </div>
-            <DownLoadQR canvasRef={canvasRef} />
+            <DownLoadQR canvasRef={canvasRef} fileName={data.slug} />
           </Modal>
         </>
       )}

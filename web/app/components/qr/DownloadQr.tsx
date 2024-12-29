@@ -64,8 +64,10 @@ function downloadStringAsFile(data: string, filename: string) {
 
 export default function DownLoadQR({
   canvasRef,
+  fileName,
 }: {
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  fileName: string;
 }) {
   const onCanvasBtn = () => {
     const node = canvasRef.current;
@@ -87,7 +89,7 @@ export default function DownLoadQR({
     const blob = new Blob([ab], { type: mimeString });
     const blobURL = URL.createObjectURL(blob);
 
-    downloadStringAsFile(blobURL, "qrcode-canvas.png");
+    downloadStringAsFile(blobURL, `${fileName}.png`);
   };
 
   return (

@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_files as fs;
+//use actix_files as fs;
 use actix_web::{http::header, web};
 
 use super::auth::{login, logout, me, refresh_access_token, register};

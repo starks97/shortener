@@ -1,6 +1,6 @@
 export default function NoData() {
   return (
-    <div className="flex flex-col items-center justify-center py-16">
+    <div className="flex flex-col items-center justify-center py-16 w-full">
       {/* Icon / Illustration */}
       <div className="w-16 h-16 mb-4 flex items-center justify-center text-gray-400">
         <svg
