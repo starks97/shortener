@@ -17,3 +17,10 @@ export const ACookie = createCookie("access_token", {
   httpOnly: true,
   ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });
+
+export const logoutRtoken = createCookie("refresh_token", {
+  maxAge: 0,
+});
+export const logoutAtoken = createCookie("access_token", {
+  maxAge: 0,
+});

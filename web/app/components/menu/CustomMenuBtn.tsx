@@ -30,11 +30,9 @@ import { baseNavItems, parseNavLink } from "./navItems";
 
 export default function CustomMenuBtn({
   isLoggedIn,
-  handleLogout,
   canRefresh,
 }: {
   isLoggedIn: boolean;
-  handleLogout: () => void;
   canRefresh: boolean;
 }) {
   const location = useLocation();
@@ -65,9 +63,9 @@ export default function CustomMenuBtn({
           <li key={label}>
             {label.toLowerCase() === "workspace" &&
             currentPath === "/workspace" ? (
-              <button onClick={handleLogout} className="menu_btn__a">
-                Logout
-              </button>
+              <form method="post" action="/auth/logout">
+                <button className="menu_btn__a">Logout</button>
+              </form>
             ) : label.toLowerCase() === "login" ||
               label.toLowerCase() === "workspace" ? (
               <Link

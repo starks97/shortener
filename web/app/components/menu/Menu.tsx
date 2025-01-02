@@ -13,11 +13,6 @@ export default function Menu({
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    console.log("User logged out");
-    navigate("/");
-  };
-
   return (
     <nav className="bg-transparent border-b border-gray-200 px-5 py-3 mb-5">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
@@ -68,11 +63,7 @@ export default function Menu({
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex md:space-x-8 items-center">
-          <CustomMenuBtn
-            handleLogout={handleLogout}
-            isLoggedIn={isLoggedIn}
-            canRefresh={canRefresh}
-          />
+          <CustomMenuBtn isLoggedIn={isLoggedIn} canRefresh={canRefresh} />
         </ul>
       </div>
 
@@ -80,11 +71,7 @@ export default function Menu({
       {menuOpen && (
         <div className="md:hidden border-t border-gray-200">
           <ul className="flex flex-col space-y-1 py-2 px-4">
-            <CustomMenuBtn
-              handleLogout={handleLogout}
-              isLoggedIn={isLoggedIn}
-              canRefresh={canRefresh}
-            />
+            <CustomMenuBtn isLoggedIn={isLoggedIn} canRefresh={canRefresh} />
           </ul>
         </div>
       )}

@@ -7,7 +7,7 @@ import {
 
 import { actions } from "./proxyActions";
 
-import { ACookie } from "~/cookies.server";
+import { ACookie, RCookie } from "~/cookies.server";
 
 /**
  * A proxy handler function that routes the incoming request to a corresponding action based on URL search parameters.
@@ -73,14 +73,15 @@ export default async function handlerProxy<T extends keyof ProxyActions>(
 
   const queryParams = Object.fromEntries(incomingUrl.searchParams.entries());
   const getCookie = req.headers.get("Cookie") || "";
-  const accessToken = await ACookie.parse(getCookie);
+  const token = await ACookie.parse(getCookie);
+
   const bodyParams = req.method !== "GET" ? await req.json() : {};
   const params = { ...queryParams, ...bodyParams };
 
   try {
     const result = (await actions[action](
       params,
-      accessToken
+      token
     )) as ActionReturnTypes[T];
 
     if (result.status === "error") {

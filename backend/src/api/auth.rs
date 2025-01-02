@@ -268,7 +268,7 @@ async fn refresh_access_token(
     .json(serde_json::json!({"status": "success", "data": { "access_token": access_token_details.token.unwrap() }})))
 }
 
-#[get("/auth/logout")]
+#[post("/auth/logout")]
 async fn logout(
     req: HttpRequest,
     auth_guard: JwtMiddleware,
@@ -295,32 +295,24 @@ async fn logout(
         ])
         .await;
 
-    match redis_result {
-        Ok(_) => {
-            let access_cookie = Cookie::build("access_token", "")
-                .path("/")
-                .max_age(ActixWebDuration::new(-1, 0))
-                .http_only(true)
-                .finish();
-            let refresh_cookie = Cookie::build("refresh_token", "")
-                .path("/")
-                .max_age(ActixWebDuration::new(-1, 0))
-                .http_only(true)
-                .finish();
-            let logged_in_cookie = Cookie::build("logged_in", "")
-                .path("/")
-                .max_age(ActixWebDuration::new(-1, 0))
-                .http_only(true)
-                .finish();
-
-            Ok(HttpResponse::Ok()
-                .cookie(access_cookie)
-                .cookie(refresh_cookie)
-                .cookie(logged_in_cookie)
-                .json(serde_json::json!({"status": "success"})))
-        }
-        Err(err) => Err(CustomError::RedisError(err)),
+    if let Err(err) = redis_result {
+        return Err(CustomError::RedisError(err));
     }
+    let access_cookie = Cookie::build("access_token", "")
+        .path("/")
+        .max_age(ActixWebDuration::new(-1, 0))
+        .http_only(true)
+        .finish();
+    let refresh_cookie = Cookie::build("refresh_token", "")
+        .path("/")
+        .max_age(ActixWebDuration::new(-1, 0))
+        .http_only(true)
+        .finish();
+
+    Ok(HttpResponse::Ok()
+        .cookie(access_cookie)
+        .cookie(refresh_cookie)
+        .json(serde_json::json!({"status": "success", "message": "you have been log out. Have a nice day"})))
 }
 
 #[get("/users/me")]

@@ -1,5 +1,7 @@
 // Utility Types
 
+import { T } from "node_modules/@tanstack/query-core/build/modern/hydration-ClXcjjG9";
+
 /**
  * A utility type that flattens nested `data` properties in API responses.
  * If the type `T` has a `data` property, it extracts and returns its type `U`.
