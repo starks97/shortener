@@ -157,13 +157,7 @@ pub fn handle_validation_error(
     let error_message = validation_error
         .field_errors()
         .values()
-        .map(|errors| {
-            errors
-                .iter()
-                .map(|err| err.to_string())
-                .collect::<Vec<String>>()
-        })
-        .flatten()
+        .flat_map(|errors| errors.iter().map(|err| err.to_string()))
         .collect::<Vec<String>>()
         .join(", ");
 

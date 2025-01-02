@@ -9,8 +9,8 @@ use redis::Commands;
 use serde::{Deserialize, Serialize};
 
 use crate::app_state::AppState;
+use crate::jwt_token::token::verify_jwt_token;
 use crate::models::user::User;
-use crate::token::token::verify_jwt_token;
 
 #[derive(Debug, Serialize)]
 struct ErrorResponse {

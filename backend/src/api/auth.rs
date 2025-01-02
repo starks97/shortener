@@ -13,7 +13,7 @@ use super::reponse::{filter_user_record, UserResponse};
 
 use crate::app_state::AppState;
 
-use crate::token::token::{generate_jwt_token, verify_jwt_token};
+use crate::jwt_token::token::{generate_jwt_token, verify_jwt_token};
 
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
