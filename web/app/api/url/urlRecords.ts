@@ -1,4 +1,5 @@
 import { UrlCategories, ApiResponse, UrlData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function urlRecords(
   token: string,
@@ -10,7 +11,7 @@ export default async function urlRecords(
     ? `&category=${encodeURIComponent(category)}`
     : "";
   const res = await fetch(
-    `http://localhost:8000/api/url?limit=${limit}&offset=${offset}${categoryParam}`,
+    `${deployment.path}/api/url?limit=${limit}&offset=${offset}${categoryParam}`,
     {
       method: "GET",
       headers: {

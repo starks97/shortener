@@ -1,7 +1,8 @@
 import { ApiResponse, UrlData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function urlRecord(id: string, token: string) {
-  const res = await fetch(`http://localhost:8000/api/url/${id}`, {
+  const res = await fetch(`${deployment.path}/api/url/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

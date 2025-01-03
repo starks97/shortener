@@ -1,4 +1,5 @@
 import { ApiResponse } from "@interfaces";
+import { deployment } from "config";
 
 type AuthTokens = {
   Atoken: string;
@@ -6,7 +7,7 @@ type AuthTokens = {
 };
 
 export default async function logout({ Atoken, Rtoken }: AuthTokens) {
-  const res = await fetch(`http://localhost:8000/api/auth/logout`, {
+  const res = await fetch(`${deployment.path}/api/auth/logout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

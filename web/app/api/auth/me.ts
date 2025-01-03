@@ -1,7 +1,8 @@
 import { ApiResponse, Me } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function me(token: string) {
-  const res = await fetch(`http://localhost:8000/api/users/me`, {
+  const res = await fetch(`${deployment.path}/api/users/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

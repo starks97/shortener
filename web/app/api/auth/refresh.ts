@@ -1,7 +1,8 @@
 import { ApiResponse, RefreshTokenData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function refresh(token: string) {
-  const res = await fetch(`http://localhost:8000/api/auth/refresh`, {
+  const res = await fetch(`${deployment.path}/api/auth/refresh`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

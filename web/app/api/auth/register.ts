@@ -1,11 +1,12 @@
 import { ApiResponse, RegisterData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function register(
   email: string,
   password: string,
   name: string
 ) {
-  const res = await fetch("http://localhost:8000/api/auth/register", {
+  const res = await fetch(`${deployment.path}/api/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

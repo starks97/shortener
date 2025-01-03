@@ -1,4 +1,5 @@
 import { UrlCategories, ApiResponse, UrlData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function createUrl(
   token: string,
@@ -6,7 +7,7 @@ export default async function createUrl(
   short_url: string,
   category: UrlCategories
 ) {
-  const res = await fetch(`http://localhost:8000/api/url`, {
+  const res = await fetch(`${deployment.path}/api/url`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

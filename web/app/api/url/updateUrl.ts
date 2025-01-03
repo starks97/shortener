@@ -1,4 +1,5 @@
 import { UrlCategories, ApiResponse, UrlData } from "~/interfaces";
+import { deployment } from "config";
 
 export default async function updateUrl(
   token: string,
@@ -7,7 +8,7 @@ export default async function updateUrl(
   short_url?: string,
   category?: UrlCategories
 ) {
-  const res = await fetch(`http://localhost:8000/api/url/${id}`, {
+  const res = await fetch(`${deployment.path}/api/url/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
