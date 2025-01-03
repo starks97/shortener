@@ -58,8 +58,6 @@ export default async function dynamicFetcher<T>({
     url += `&${urlParams.toString()}`;
   }
 
-  console.log("from dynamic fetcher", url);
-
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };

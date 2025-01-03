@@ -70,6 +70,7 @@ export default function FilterAndPag({
           label="Category"
           selectedCategory={category}
           onSelectCategory={handleCtgChange}
+          isFiltered={true}
         />
       </div>
     </div>

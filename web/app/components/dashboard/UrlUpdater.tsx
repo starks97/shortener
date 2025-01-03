@@ -26,11 +26,12 @@ export default function UrlUpdater({
   short_url,
 }: UrlUpdaterPropsTypes) {
   const query = useQueryClient();
+
   const [fieldBeingEdited, setFieldBeingEdited] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<Record<string, string>>({
     original_url: original_url,
     short_url: short_url,
-    category: category as UrlCategories,
+    category: category,
   });
   const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
 
@@ -208,6 +209,7 @@ export default function UrlUpdater({
                           inputValue["category"] as UrlCategories
                         }
                         onSelectCategory={handleCtgChange}
+                        isFiltered={false}
                       />
                     )}
 

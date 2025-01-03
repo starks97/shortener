@@ -8,7 +8,7 @@ import { validationAction } from "~/utils/validationAction";
 
 import { CreateUrlSchema } from "@models/url.models";
 
-import { navigateWorkSpace } from "~/consts";
+import { navigateWorkSpace, workspace } from "~/consts";
 
 import { modalActions } from "~/utils/modalActions";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@interfaces";
 import Modal from "@components/Modal";
 import { createNewUrl } from "~/utils/proxyClient";
+import CustomDropdown from "../CustomDropDown";
 
 export default function NewUrl() {
   const query = useQueryClient();
@@ -41,7 +42,7 @@ export default function NewUrl() {
   const [inputValue, setInputValue] = useState<Record<string, string>>({
     original_url: "",
     short_url: "",
-    category: "",
+    category: "Select a category",
   });
 
   const urlFormDefinitions = formDefinitions["url"];
@@ -49,7 +50,7 @@ export default function NewUrl() {
   const [validationErrors, setValidationErrors] = useState<FieldErrors>({});
 
   const closeModal = () => {
-    navigate(-1);
+    navigate(workspace, { replace: true });
   };
 
   const mutation = useMutation<
@@ -101,6 +102,10 @@ export default function NewUrl() {
     }));
   };
 
+  const handleCtgChange = (selectedCategory: UrlCategories) => {
+    setInputValue((prev) => ({ ...prev, category: selectedCategory }));
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const { data, errors } = await validationAction({
@@ -147,29 +152,11 @@ export default function NewUrl() {
                 }
               />
             ) : (
-              <select
-                id={field.name}
-                name={field.name}
-                required={field.required}
-                value={inputValue[field.name] || ""}
-                onChange={(e) => handleInputChange(field.name, e.target.value)}
-                className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-                  validationErrors ? "border-red-500" : "border-gray-300"
-                }`}
-                aria-invalid={!!validationErrors}
-                aria-describedby={
-                  validationErrors ? `${field.name}-error` : undefined
-                }
-              >
-                <option value="" disabled>
-                  {field.placeholder}
-                </option>
-                {field.options?.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <CustomDropdown
+                selectedCategory={inputValue["category"] as UrlCategories}
+                onSelectCategory={handleCtgChange}
+                isFiltered={false}
+              />
             )}
             {validationErrors[field.name] && (
               <p className="error-message">{validationErrors[field.name]}</p>

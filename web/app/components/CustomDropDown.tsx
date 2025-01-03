@@ -4,15 +4,17 @@ import React, { useState, useRef, useEffect } from "react";
 import { UrlCategories } from "@interfaces";
 
 type CustomDropdownProps = {
-  label: string;
+  label?: string;
   selectedCategory: UrlCategories;
   onSelectCategory: (category: UrlCategories) => void;
+  isFiltered: boolean;
 };
 
 const CustomDropdown: React.FC<CustomDropdownProps> = ({
   label,
   selectedCategory,
   onSelectCategory,
+  isFiltered,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
@@ -20,8 +22,11 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const optionsRef = useRef<HTMLLIElement[]>([]);
 
-  // Convert enum to array of values
   const categories: UrlCategories[] = Object.values(UrlCategories);
+
+  const filteredCategories = isFiltered
+    ? categories // Filtering once if needed
+    : categories.filter((category) => category !== "All");
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -114,19 +119,23 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   return (
     <div
-      className="flex justify-center items-center space-x-5"
+      className="flex justify-center items-center space-x-5 "
       ref={dropdownRef}
     >
-      <label
-        id="dropdown-label"
-        htmlFor="custom-dropdown"
-        className="block text-lg font-medium text-gray-200 mb-1"
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          id="dropdown-label"
+          htmlFor="custom-dropdown"
+          className="block text-lg font-medium text-gray-200 mb-1"
+        >
+          {label}
+        </label>
+      )}
       <button
         type="button"
-        className="inline-flex justify-between w-48 rounded-md border border-orange-400 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        className={`inline-flex justify-between ${
+          label ? "w-48" : "w-full"
+        } rounded-md border border-orange-400 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500`}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         aria-labelledby="dropdown-label"
@@ -157,25 +166,27 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           role="listbox"
           aria-labelledby="dropdown-label"
           tabIndex={-1}
-          className="absolute z-10 mt-1 w-48 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-orange-400"
+          className={`absolute z-10 mt-1 ${
+            label ? "w-48" : "w-7/12"
+          } bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-orange-400`}
         >
-          {categories.map((category, index) => (
+          {filteredCategories.map((ctg, index) => (
             <li
-              key={category}
-              id={`listbox-option-${category}`}
+              key={`${ctg}-${index}`}
+              id={`listbox-option-${ctg}`}
               role="option"
-              aria-selected={selectedCategory === category}
+              aria-selected={selectedCategory === ctg}
               tabIndex={-1}
               ref={(el) => {
                 if (el) optionsRef.current[index] = el;
               }}
               className={`cursor-default select-none relative py-2 pl-10 pr-4 ${
                 highlightedIndex === index
-                  ? "text-white bg-indigo-600"
+                  ? "text-white bg-orange-500"
                   : "text-gray-900"
               }`}
               onClick={() => {
-                onSelectCategory(category);
+                onSelectCategory(ctg);
                 setIsOpen(false);
               }}
               onMouseEnter={() => setHighlightedIndex(index)}
@@ -183,13 +194,13 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
             >
               <span
                 className={`block truncate ${
-                  selectedCategory === category ? "font-medium" : "font-normal"
+                  selectedCategory === ctg ? "font-medium" : "font-normal"
                 }`}
               >
-                {category}
+                {ctg}
               </span>
 
-              {selectedCategory === category && (
+              {selectedCategory === ctg && (
                 <span
                   className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                     highlightedIndex === index

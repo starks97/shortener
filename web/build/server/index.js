@@ -4,7 +4,7 @@ import { createReadableStreamFromReadable, createCookie, redirect } from "@remix
 import { RemixServer, useLocation, Link, useNavigate, useLoaderData, Outlet, Meta, Links, ScrollRestoration, Scripts, useSearchParams, useActionData, useParams, Form } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { QueryClient, QueryClientProvider, HydrationBoundary, useQueryClient, useMutation, useQuery, dehydrate } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import { useDehydratedState } from "use-dehydrated-state";
@@ -135,51 +135,91 @@ const ACookie = createCookie("access_token", {
   httpOnly: true,
   ...process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }
 });
-const stylesheet = "/assets/tailwind-Du35zxu1.css";
+const logoutRtoken = createCookie("refresh_token", {
+  maxAge: 0
+});
+const logoutAtoken = createCookie("access_token", {
+  maxAge: 0
+});
+const stylesheet = "/assets/tailwind-Ca0oTEos.css";
+const workspace = `/workspace?offset=1&limit=10&category=All`;
+const navigateWorkSpace = {
+  pathname: "/workspace",
+  search: "?offset=1&limit=10&category=All"
+};
+const modalNavigateActions = {
+  view: (id) => {
+    return {
+      pathname: `/workspace/${id}`,
+      search: "?modal=view"
+    };
+  },
+  qr: (id) => {
+    return {
+      pathname: `/workspace/${id}`,
+      search: "?modal=qr"
+    };
+  }
+};
+function parseNavLink(link) {
+  if (typeof link === "string") {
+    if (link === "/workspace/new_url") {
+      return { pathname: "/workspace/new_url", search: "?modal=create" };
+    }
+    return { pathname: link, search: "" };
+  }
+  return {
+    pathname: link.pathname,
+    search: link.search ?? ""
+  };
+}
 function baseNavItems() {
   return [
     { label: "Home", link: "/" },
-    { label: "Workspace", link: "/workspace" }
+    { label: "Workspace", link: navigateWorkSpace }
   ];
 }
 function CustomMenuBtn({
   isLoggedIn,
-  handleLogout,
   canRefresh
 }) {
   const location = useLocation();
   const currentPath = location.pathname;
+  const publicRoutes = ["/", "/auth/login"];
   const items = baseNavItems();
   if ((isLoggedIn || canRefresh) && currentPath.startsWith("/workspace")) {
     items.push({ label: "Profile", link: "/workspace/me" });
     items.push({ label: "New Url", link: "/workspace/new_url" });
   }
-  if (!isLoggedIn && !canRefresh && currentPath === "/") {
+  if (!isLoggedIn && !canRefresh && publicRoutes.includes(currentPath)) {
     items.splice(1, 1, { label: "Login", link: "/auth/login" });
   }
   const sortedItems = items.sort(
     (a, b) => a.label.toLowerCase().localeCompare(b.label.toLowerCase())
   );
-  return /* @__PURE__ */ jsx(Fragment, { children: sortedItems.map(({ label, link }) => /* @__PURE__ */ jsx("li", { children: label.toLowerCase() === "workspace" && currentPath === "/workspace" ? /* @__PURE__ */ jsx("button", { onClick: handleLogout, className: "menu_btn__a", children: "Logout" }) : label.toLowerCase() === "login" || label.toLowerCase() === "workspace" ? /* @__PURE__ */ jsx(
-    Link,
-    {
-      to: {
-        pathname: link === "/workspace/new_url" ? "/workspace/new_url" : link,
-        search: link === "/workspace/new_url" ? "?modal=create" : ""
-      },
-      children: /* @__PURE__ */ jsx("button", { className: "menu_btn__a", children: label })
-    }
-  ) : /* @__PURE__ */ jsx(
-    Link,
-    {
-      to: {
-        pathname: link === "/workspace/new_url" ? "/workspace/new_url" : link,
-        search: link === "/workspace/new_url" ? "?modal=create" : ""
-      },
-      className: "text-white hover:text-orange-600 font-medium py-2 px-3 transition duration-200",
-      children: label
-    }
-  ) }, label)) });
+  return /* @__PURE__ */ jsx(Fragment, { children: sortedItems.map(({ label, link }) => {
+    const { pathname, search } = parseNavLink(link);
+    return /* @__PURE__ */ jsx("li", { children: label.toLowerCase() === "workspace" && currentPath === "/workspace" ? /* @__PURE__ */ jsx("form", { method: "post", action: "/auth/logout", children: /* @__PURE__ */ jsx("button", { className: "menu_btn__a", children: "Logout" }) }) : label.toLowerCase() === "login" || label.toLowerCase() === "workspace" ? /* @__PURE__ */ jsx(
+      Link,
+      {
+        to: {
+          pathname,
+          search
+        },
+        children: /* @__PURE__ */ jsx("button", { className: "menu_btn__a", children: label })
+      }
+    ) : /* @__PURE__ */ jsx(
+      Link,
+      {
+        to: {
+          pathname,
+          search
+        },
+        className: "text-white hover:text-orange-600 font-medium py-2 px-3 transition duration-200",
+        children: label
+      }
+    ) }, label);
+  }) });
 }
 function OverWriteIcon() {
   return /* @__PURE__ */ jsxs(
@@ -448,11 +488,7 @@ function Menu({
   canRefresh
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    console.log("User logged out");
-    navigate("/");
-  };
+  useNavigate();
   return /* @__PURE__ */ jsxs("nav", { className: "bg-transparent border-b border-gray-200 px-5 py-3 mb-5", children: [
     /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto px-4 flex items-center justify-between h-16", children: [
       /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 group-hover:text-white", children: /* @__PURE__ */ jsxs(
@@ -502,23 +538,9 @@ function Menu({
           ) })
         }
       ) }),
-      /* @__PURE__ */ jsx("ul", { className: "hidden md:flex md:space-x-8 items-center", children: /* @__PURE__ */ jsx(
-        CustomMenuBtn,
-        {
-          handleLogout,
-          isLoggedIn,
-          canRefresh
-        }
-      ) })
+      /* @__PURE__ */ jsx("ul", { className: "hidden md:flex md:space-x-8 items-center", children: /* @__PURE__ */ jsx(CustomMenuBtn, { isLoggedIn, canRefresh }) })
     ] }),
-    menuOpen && /* @__PURE__ */ jsx("div", { className: "md:hidden border-t border-gray-200", children: /* @__PURE__ */ jsx("ul", { className: "flex flex-col space-y-1 py-2 px-4", children: /* @__PURE__ */ jsx(
-      CustomMenuBtn,
-      {
-        handleLogout,
-        isLoggedIn,
-        canRefresh
-      }
-    ) }) })
+    menuOpen && /* @__PURE__ */ jsx("div", { className: "md:hidden border-t border-gray-200", children: /* @__PURE__ */ jsx("ul", { className: "flex flex-col space-y-1 py-2 px-4", children: /* @__PURE__ */ jsx(CustomMenuBtn, { isLoggedIn, canRefresh }) }) })
   ] });
 }
 const links = () => [
@@ -731,7 +753,7 @@ const CreateUrlSchema = z.object({
   original_url: z.string().url(),
   short_url: z.string({
     description: "short url must be provide, please provide at lease a name"
-  }).min(5).max(30),
+  }).min(5, { message: "Custom Short Url must contain at least 5 characters." }).max(30, { message: "Custom Short Url must contain max 5 characters." }),
   category: z.nativeEnum(UrlCategories)
 });
 const UpdateUrlSchema = CreateUrlSchema.partial();
@@ -769,9 +791,9 @@ const Modal = React.forwardRef(
       {
         id,
         ref,
-        className: "rounded-lg shadow-xl w-full mx-4 md:mx-auto md:max-w-md",
+        className: "rounded-lg shadow-xl w-full mx-4 md:mx-auto md:max-w-md p-5",
         children: [
-          /* @__PURE__ */ jsxs("header", { className: "flex justify-between items-center", children: [
+          /* @__PURE__ */ jsxs("header", { className: "flex justify-between items-center border-b border-orange-400 px-5", children: [
             /* @__PURE__ */ jsx("span", { className: "text-2xl font-semibold text-gray-200", children: title }),
             /* @__PURE__ */ jsx("button", { className: "p-1", onClick: close, children: /* @__PURE__ */ jsx(
               "svg",
@@ -801,6 +823,7 @@ async function dynamicFetcher({
   queryParams,
   request
 }) {
+  var _a;
   const isServer = typeof window === "undefined";
   const urlParams = new URLSearchParams();
   if (queryParams) {
@@ -834,8 +857,21 @@ async function dynamicFetcher({
     fetchOptions.body = JSON.stringify(body);
   }
   const res = await fetch(url, fetchOptions);
-  const apiResponse = await res.json();
-  return apiResponse;
+  if (!res.ok) {
+    console.error(`Fetch failed: ${res.status} ${res.statusText}`);
+    throw new Error(`HTTP error! Status: ${res.status}`);
+  }
+  try {
+    const apiResponse = ((_a = res.headers.get("Content-Type")) == null ? void 0 : _a.includes("application/json")) ? await res.json() : null;
+    if (!apiResponse) {
+      console.warn("Response is empty or not JSON:", await res.text());
+      throw new Error("Invalid or empty response from server.");
+    }
+    return apiResponse;
+  } catch (err) {
+    console.error("Failed to parse response as JSON:", err);
+    throw new Error("An error occurred while processing the response.");
+  }
 }
 async function updateUrl$1(id, short_url, original_url, category, request) {
   if (!id) {
@@ -956,7 +992,7 @@ function NewUrl() {
       return;
     }
     mutation.mutate(data);
-    navigate("/workspace", { replace: true });
+    navigate(navigateWorkSpace, { replace: true });
   };
   return /* @__PURE__ */ jsx(
     Modal,
@@ -980,7 +1016,7 @@ function NewUrl() {
                 required: field.required,
                 value: inputValue[field.name] || "",
                 onChange: (e) => handleInputChange(field.name, e.target.value),
-                className: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${validationErrors ? "border-red-500" : "border-gray-300"}`,
+                className: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${validationErrors ? "border-red-500 " : "border-gray-300"}`,
                 "aria-invalid": !!validationErrors,
                 "aria-describedby": validationErrors ? `${field.name}-error` : void 0
               }
@@ -1120,28 +1156,8 @@ function UrlCard({ short_url, id, slug }) {
       }
     ) }),
     /* @__PURE__ */ jsxs("div", { className: "mt-5 w-full flex items-center justify-between", children: [
-      /* @__PURE__ */ jsx(
-        Link,
-        {
-          to: {
-            pathname: `/workspace/${id}`,
-            search: "?modal=view"
-          },
-          className: "btn-grad",
-          children: /* @__PURE__ */ jsx(ToolTip, { label: "info", children: /* @__PURE__ */ jsx(ViewMore, {}) })
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        Link,
-        {
-          to: {
-            pathname: `/workspace/${id}`,
-            search: "?modal=qr"
-          },
-          className: "btn-grad",
-          children: /* @__PURE__ */ jsx(ToolTip, { label: "qr code", children: /* @__PURE__ */ jsx(QRIcon, {}) })
-        }
-      )
+      /* @__PURE__ */ jsx(Link, { to: modalNavigateActions["view"](id), className: "btn-grad", children: /* @__PURE__ */ jsx(ToolTip, { label: "info", children: /* @__PURE__ */ jsx(ViewMore, {}) }) }),
+      /* @__PURE__ */ jsx(Link, { to: modalNavigateActions["qr"](id), className: "btn-grad", children: /* @__PURE__ */ jsx(ToolTip, { label: "qr code", children: /* @__PURE__ */ jsx(QRIcon, {}) }) })
     ] })
   ] });
 }
@@ -1171,10 +1187,207 @@ function SkeletonUrlCard() {
     ] })
   ] });
 }
+const CustomDropdown = ({
+  label,
+  selectedCategory,
+  onSelectCategory
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const dropdownRef = useRef(null);
+  const buttonRef = useRef(null);
+  const optionsRef = useRef([]);
+  const categories = Object.values(UrlCategories);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  const handleButtonKeyDown = (event) => {
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        setIsOpen(true);
+        setHighlightedIndex(0);
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        setIsOpen(true);
+        setHighlightedIndex(categories.length - 1);
+        break;
+      case "Escape":
+        if (isOpen) {
+          event.preventDefault();
+          setIsOpen(false);
+          setHighlightedIndex(-1);
+        }
+        break;
+    }
+  };
+  const handleOptionKeyDown = (event, index) => {
+    var _a, _b;
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        setHighlightedIndex(
+          (prev) => prev < categories.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        setHighlightedIndex(
+          (prev) => prev > 0 ? prev - 1 : categories.length - 1
+        );
+        break;
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        onSelectCategory(categories[index]);
+        setIsOpen(false);
+        (_a = buttonRef.current) == null ? void 0 : _a.focus();
+        break;
+      case "Escape":
+        event.preventDefault();
+        setIsOpen(false);
+        setHighlightedIndex(-1);
+        (_b = buttonRef.current) == null ? void 0 : _b.focus();
+        break;
+    }
+  };
+  useEffect(() => {
+    if (highlightedIndex >= 0 && optionsRef.current[highlightedIndex]) {
+      optionsRef.current[highlightedIndex].scrollIntoView({
+        block: "nearest"
+      });
+    }
+  }, [highlightedIndex]);
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: "flex justify-center items-center space-x-5",
+      ref: dropdownRef,
+      children: [
+        /* @__PURE__ */ jsx(
+          "label",
+          {
+            id: "dropdown-label",
+            htmlFor: "custom-dropdown",
+            className: "block text-lg font-medium text-gray-200 mb-1",
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            className: "inline-flex justify-between w-48 rounded-md border border-orange-400 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500",
+            "aria-haspopup": "listbox",
+            "aria-expanded": isOpen,
+            "aria-labelledby": "dropdown-label",
+            onClick: () => setIsOpen((prev) => !prev),
+            onKeyDown: handleButtonKeyDown,
+            ref: buttonRef,
+            children: [
+              /* @__PURE__ */ jsx("span", { className: "block truncate", children: selectedCategory }),
+              /* @__PURE__ */ jsx(
+                "svg",
+                {
+                  className: `-mr-1 ml-2 h-5 w-5 transform transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`,
+                  xmlns: "http://www.w3.org/2000/svg",
+                  viewBox: "0 0 20 20",
+                  fill: "currentColor",
+                  "aria-hidden": "true",
+                  children: /* @__PURE__ */ jsx(
+                    "path",
+                    {
+                      fillRule: "evenodd",
+                      d: "M5.23 7.21a.75.75 0 011.06.02L10 11.584l3.71-4.353a.75.75 0 111.14.976l-4.25 5a.75.75 0 01-1.14 0l-4.25-5a.75.75 0 01.02-1.06z",
+                      clipRule: "evenodd"
+                    }
+                  )
+                }
+              )
+            ]
+          }
+        ),
+        isOpen && /* @__PURE__ */ jsx(
+          "ul",
+          {
+            role: "listbox",
+            "aria-labelledby": "dropdown-label",
+            tabIndex: -1,
+            className: "absolute z-10 mt-1 w-48 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-orange-400",
+            children: categories.map((category, index) => /* @__PURE__ */ jsxs(
+              "li",
+              {
+                id: `listbox-option-${category}`,
+                role: "option",
+                "aria-selected": selectedCategory === category,
+                tabIndex: -1,
+                ref: (el) => {
+                  if (el) optionsRef.current[index] = el;
+                },
+                className: `cursor-default select-none relative py-2 pl-10 pr-4 ${highlightedIndex === index ? "text-white bg-indigo-600" : "text-gray-900"}`,
+                onClick: () => {
+                  onSelectCategory(category);
+                  setIsOpen(false);
+                },
+                onMouseEnter: () => setHighlightedIndex(index),
+                onKeyDown: (e) => handleOptionKeyDown(e, index),
+                children: [
+                  /* @__PURE__ */ jsx(
+                    "span",
+                    {
+                      className: `block truncate ${selectedCategory === category ? "font-medium" : "font-normal"}`,
+                      children: category
+                    }
+                  ),
+                  selectedCategory === category && /* @__PURE__ */ jsx(
+                    "span",
+                    {
+                      className: `absolute inset-y-0 left-0 flex items-center pl-3 ${highlightedIndex === index ? "text-white" : "text-indigo-600"}`,
+                      children: /* @__PURE__ */ jsx(
+                        "svg",
+                        {
+                          className: "h-5 w-5 text-orange-300",
+                          xmlns: "http://www.w3.org/2000/svg",
+                          viewBox: "0 0 20 20",
+                          fill: "currentColor",
+                          "aria-hidden": "true",
+                          children: /* @__PURE__ */ jsx(
+                            "path",
+                            {
+                              fillRule: "evenodd",
+                              d: "M16.704 4.153a.75.75 0 011.05.143l-8 10.5a.75.75 0 01-1.14.075l-4.5-4.5a.75.75 0 111.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z",
+                              clipRule: "evenodd"
+                            }
+                          )
+                        }
+                      )
+                    }
+                  )
+                ]
+              },
+              category
+            ))
+          }
+        )
+      ]
+    }
+  );
+};
 function FilterAndPag({
   offset,
   limit,
-  category
+  category,
+  dataLength
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const handlePageChange = (newPage) => {
@@ -1186,35 +1399,75 @@ function FilterAndPag({
       return params;
     });
   };
-  const handleCtgChange = (event) => {
-    const newCategory = event.target.value;
+  const handleCtgChange = (selectedCategory) => {
     setSearchParams({
       offset: "1",
-      // Reset to first page when category changes
       limit: limit.toString(),
-      category: newCategory
+      category: selectedCategory
     });
   };
-  return /* @__PURE__ */ jsxs("div", { className: "w-full flex justify-between", children: [
+  return /* @__PURE__ */ jsxs("div", { className: "container mx-auto flex justify-center flex-col md:flex-row md:justify-between items-center space-y-5", children: [
     /* @__PURE__ */ jsxs("div", { className: "space-x-8", children: [
       /* @__PURE__ */ jsx(
         "button",
         {
           onClick: () => handlePageChange(offset - 1),
           disabled: offset <= 1,
-          children: "Previous"
+          className: "px-5 py-3 border border-orange-400 rounded-lg",
+          children: "Prev"
         }
       ),
-      /* @__PURE__ */ jsxs("span", { children: [
-        "Page ",
-        offset
-      ] }),
-      /* @__PURE__ */ jsx("button", { onClick: () => handlePageChange(offset + 1), children: "Next" })
+      /* @__PURE__ */ jsx("span", { className: "border-b border-orange-400", children: offset }),
+      dataLength < limit ? /* @__PURE__ */ jsx(ToolTip, { label: "no data", children: /* @__PURE__ */ jsx(
+        "button",
+        {
+          disabled: dataLength < limit,
+          onClick: () => handlePageChange(offset + 1),
+          className: "px-5 py-3 border border-orange-400 rounded-lg",
+          children: "Next"
+        }
+      ) }) : /* @__PURE__ */ jsx(
+        "button",
+        {
+          disabled: dataLength < limit,
+          onClick: () => handlePageChange(offset + 1),
+          className: "px-5 py-3 border border-orange-400 rounded-lg",
+          children: "Next"
+        }
+      )
     ] }),
-    /* @__PURE__ */ jsxs("div", { className: "filter-section", children: [
-      /* @__PURE__ */ jsx("label", { htmlFor: "category", children: "Category:" }),
-      /* @__PURE__ */ jsx("select", { id: "category", value: category, onChange: handleCtgChange, children: Object.values(UrlCategories).map((ctg) => /* @__PURE__ */ jsx("option", { value: ctg, children: ctg }, ctg)) })
-    ] })
+    /* @__PURE__ */ jsx("div", { className: "", children: /* @__PURE__ */ jsx(
+      CustomDropdown,
+      {
+        label: "Category",
+        selectedCategory: category,
+        onSelectCategory: handleCtgChange
+      }
+    ) })
+  ] });
+}
+function NoData() {
+  return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center justify-center py-16 w-full", children: [
+    /* @__PURE__ */ jsx("div", { className: "w-16 h-16 mb-4 flex items-center justify-center text-gray-400", children: /* @__PURE__ */ jsx(
+      "svg",
+      {
+        className: "w-16 h-16",
+        fill: "none",
+        stroke: "currentColor",
+        strokeWidth: "1.5",
+        viewBox: "0 0 24 24",
+        children: /* @__PURE__ */ jsx(
+          "path",
+          {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            d: "M3 10h18M3 6h18M3 14h18M3 18h18"
+          }
+        )
+      }
+    ) }),
+    /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold text-gray-800 mb-2", children: "No More Data" }),
+    /* @__PURE__ */ jsx("p", { className: "text-gray-500 text-center max-w-md", children: "You have reached the end! There are no more items to load at this time." })
   ] });
 }
 function Dashboard({
@@ -1232,17 +1485,32 @@ function Dashboard({
       error.message
     ] });
   }
+  const dataLength = data == null ? void 0 : data.length;
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx(FilterAndPag, { category, limit, offset }),
-    /* @__PURE__ */ jsx("div", { className: "grid gid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center w-full p-10 ", children: isLoading ? Array.from({ length: limit }).map((_, index) => /* @__PURE__ */ jsx(SkeletonUrlCard, {}, index)) : data ? data.map((url) => /* @__PURE__ */ jsx(
-      UrlCard,
+    data && /* @__PURE__ */ jsx(
+      FilterAndPag,
       {
-        id: url.id,
-        short_url: url.short_url,
-        slug: url.slug
-      },
-      url.id
-    )) : null })
+        category,
+        limit,
+        offset,
+        dataLength
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: data && data.length ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center w-full p-10" : "flex w-full p-10",
+        children: isLoading ? Array.from({ length: limit }).map((_, index) => /* @__PURE__ */ jsx(SkeletonUrlCard, {}, index)) : data && data.length ? data.map((url) => /* @__PURE__ */ jsx(
+          UrlCard,
+          {
+            id: url.id,
+            short_url: url.short_url,
+            slug: url.slug
+          },
+          url.id
+        )) : /* @__PURE__ */ jsx(NoData, {})
+      }
+    )
   ] });
 }
 const loader$3 = async ({ request }) => {
@@ -1389,7 +1657,7 @@ function DynamicForm({
     }
   );
 }
-async function action$3({ request }) {
+async function action$4({ request }) {
   const formData = Object.fromEntries(await request.formData());
   const { data, errors } = await validationAction({
     formData,
@@ -1440,7 +1708,7 @@ function Register() {
 }
 const route3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  action: action$3,
+  action: action$4,
   default: Register
 }, Symbol.toStringTag, { value: "Module" }));
 class DateConverter {
@@ -1532,7 +1800,8 @@ function downloadStringAsFile(data, filename) {
   window.URL.revokeObjectURL(data);
 }
 function DownLoadQR({
-  canvasRef
+  canvasRef,
+  fileName
 }) {
   const onCanvasBtn = () => {
     const node = canvasRef.current;
@@ -1549,7 +1818,7 @@ function DownLoadQR({
     }
     const blob = new Blob([ab], { type: mimeString });
     const blobURL = URL.createObjectURL(blob);
-    downloadStringAsFile(blobURL, "qrcode-canvas.png");
+    downloadStringAsFile(blobURL, `${fileName}.png`);
   };
   return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx(ToolTip, { label: "download ", children: /* @__PURE__ */ jsx(
     "button",
@@ -1627,8 +1896,8 @@ function UrlUpdater({
     });
     setFieldBeingEdited(null);
   };
-  const handleCategoryChange = (event) => {
-    setInputValue((prev) => ({ ...prev, category: event.target.value }));
+  const handleCtgChange = (selectedCategory) => {
+    setInputValue((prev) => ({ ...prev, category: selectedCategory }));
   };
   const handleInputChange = (event, fieldName) => {
     setInputValue((prev) => ({ ...prev, [fieldName]: event.target.value }));
@@ -1694,16 +1963,14 @@ function UrlUpdater({
               }
             ),
             field.name === "category" && /* @__PURE__ */ jsx(
-              "select",
+              CustomDropdown,
               {
-                className: `bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${validationErrors ? "border-red-500" : "border-gray-300"}`,
-                value: inputValue["category"],
-                onChange: handleCategoryChange,
-                "aria-invalid": !!validationErrors,
-                "aria-describedby": validationErrors ? `${field.name}-error` : void 0,
-                children: Object.values(UrlCategories).filter((category2) => category2 !== UrlCategories.All).map((category2) => /* @__PURE__ */ jsx("option", { value: category2, children: category2 }, category2))
+                label: "Category",
+                selectedCategory: inputValue["category"],
+                onSelectCategory: handleCtgChange
               }
             ),
+            validationErrors.fieldError && /* @__PURE__ */ jsx("div", { className: "text-red-500 text-sm mb-4", children: validationErrors.fieldError }),
             /* @__PURE__ */ jsx(
               "button",
               {
@@ -1725,6 +1992,58 @@ function UrlUpdater({
       )
     ] }, field.name);
   }) }) }) });
+}
+function DeleteRecordBtn({ id }) {
+  const query = useQueryClient();
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: async ({ id: id2 }) => {
+      try {
+        const deleteRecord = await fetch(`/api/proxy?url=delete&id=${id2}`, {
+          headers: {
+            method: "DELETE",
+            "Content-Type": "application/json"
+          }
+        });
+        const res = await deleteRecord.json();
+        if (res.status === "error") {
+          throw new Error("something happend");
+        }
+        return res;
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error.message;
+        }
+        throw "An error occurred during deleting the url.";
+      }
+    },
+    onMutate: async ({ id: id2 }) => {
+      await query.cancelQueries({ queryKey: ["url", id2] });
+    },
+    onSuccess: (res) => {
+      toast.success(res.message);
+    },
+    onError: (error) => {
+      error ? toast.error(error) : toast.error("An error ocurred while updating the URL.");
+    },
+    onSettled: async () => {
+      await query.invalidateQueries({ queryKey: ["urls"] });
+      query.removeQueries({ queryKey: ["url", id] });
+    }
+  });
+  const handleDeleteUrlRecord = async (event) => {
+    event.preventDefault();
+    mutation.mutate({ id });
+    navigate(workspace, { replace: true });
+  };
+  return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsx(
+    "button",
+    {
+      className: "border-2 border-red-600 px-5 py-2 text-red-500",
+      onClick: handleDeleteUrlRecord,
+      children: "Delete Record"
+    }
+  ) });
 }
 function UrlModalRenderer() {
   const navigate = useNavigate();
@@ -1763,7 +2082,7 @@ function UrlModalRenderer() {
         id: `modal-${id}`,
         title: data.short_url,
         ref: dialogRef,
-        footer: /* @__PURE__ */ jsx("button", { onClick: closeModal, children: "Close" }),
+        footer: /* @__PURE__ */ jsx(DeleteRecordBtn, { id }),
         close: closeModal,
         children: [
           /* @__PURE__ */ jsx(
@@ -1796,7 +2115,6 @@ function UrlModalRenderer() {
         id: `qr_modal-${id}`,
         title: "QR Generator",
         ref: qrModalRef,
-        footer: /* @__PURE__ */ jsx("button", { onClick: closeModal, children: "Close" }),
         close: closeModal,
         children: [
           /* @__PURE__ */ jsx(
@@ -1816,7 +2134,7 @@ function UrlModalRenderer() {
               style: { border: "2px solid orange" }
             }
           ) }),
-          /* @__PURE__ */ jsx(DownLoadQR, { canvasRef })
+          /* @__PURE__ */ jsx(DownLoadQR, { canvasRef, fileName: data.slug })
         ]
       }
     )
@@ -1854,7 +2172,7 @@ async function refresh(token) {
   const data = await res.json();
   return data;
 }
-async function action$2({ request }) {
+async function action$3({ request }) {
   var _a;
   const getCookie = request.headers.get("Cookie") || "";
   const refreshToken = await RCookie.parse(getCookie);
@@ -1872,7 +2190,7 @@ async function action$2({ request }) {
         );
       }
       if (headers.has("Set-Cookie")) {
-        return redirect("/workspace?offset=1&limit=10&category=All", {
+        return redirect(workspace, {
           headers
         });
       }
@@ -1885,7 +2203,6 @@ async function action$2({ request }) {
   }
 }
 function Refresh() {
-  useActionData();
   return /* @__PURE__ */ jsxs("div", { children: [
     /* @__PURE__ */ jsx("h5", { className: "text-2xl font-bold tracking-tight text-gray-900 dark:text-white", children: "Refresh your token" }),
     /* @__PURE__ */ jsx("p", { className: "font-normal text-gray-700 dark:text-gray-400", children: "You can refresh your token by clicking the button below." }),
@@ -1901,7 +2218,7 @@ function Refresh() {
 }
 const route5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  action: action$2,
+  action: action$3,
   default: Refresh
 }, Symbol.toStringTag, { value: "Module" }));
 function Me() {
@@ -1915,11 +2232,17 @@ function Me() {
       error.message
     ] });
   }
-  return /* @__PURE__ */ jsx("div", { children: data && /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("p", { className: "text-xl text-white", children: data.user.name }),
-    /* @__PURE__ */ jsx("p", { className: "text-xl text-white", children: data.user.email }),
-    /* @__PURE__ */ jsx("p", { className: "text-xl text-white", children: data.user.id })
-  ] }) });
+  return /* @__PURE__ */ jsx("div", { children: data && /* @__PURE__ */ jsx("div", { className: "flex flex-col items-center justify-center py-16 w-auto", children: /* @__PURE__ */ jsxs("div", { className: "user_card rounded-lg shadow-xl w-full mx-4 md:mx-auto md:max-w-md p-5 ", children: [
+    /* @__PURE__ */ jsx("h1", { className: "text-3xl font-semibold text-gray-200", children: "User Info" }),
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-row w-full mt-4", children: [
+      /* @__PURE__ */ jsx("span", { className: "text-gray-200 w-1/4", children: "Name" }),
+      /* @__PURE__ */ jsx("p", { className: "text-gray-200 ", children: data.user.name })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "flex flex-row w-full mt-4", children: [
+      /* @__PURE__ */ jsx("span", { className: "text-gray-200 w-1/4", children: "E-mail" }),
+      /* @__PURE__ */ jsx("p", { className: "text-gray-200 text-left", children: data.user.email })
+    ] })
+  ] }) }) });
 }
 const loader$1 = async ({ request }) => {
   const middle = await middleware(request);
@@ -1938,6 +2261,55 @@ const route6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   __proto__: null,
   default: Profile,
   loader: loader$1
+}, Symbol.toStringTag, { value: "Module" }));
+async function logout({ Atoken, Rtoken }) {
+  const res = await fetch(`http://localhost:8000/api/auth/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: `refresh_token=${Rtoken}`,
+      Authorization: `Bearer ${Atoken}`
+    }
+  });
+  const data = await res.json();
+  console.log("from api", data.message);
+  if (!res.ok) {
+    throw new Error(data.message);
+  }
+  return data;
+}
+async function action$2({ request }) {
+  const middle = await middleware(request);
+  if (middle !== null) {
+    return middle;
+  }
+  const getCookie = request.headers.get("Cookie") || "";
+  const rToken = await RCookie.parse(getCookie);
+  const aToken = await ACookie.parse(getCookie);
+  try {
+    const response = await logout({ Rtoken: rToken, Atoken: aToken });
+    if (!response) throw new Error("Something went wrong");
+    const headers = new Headers();
+    if (response.status === "success") {
+      headers.append("Set-Cookie", await logoutRtoken.serialize(""));
+      headers.append("Set-Cookie", await logoutAtoken.serialize(""));
+    }
+    if (headers.has("Set-Cookie")) {
+      return redirect("/", { headers });
+    }
+    return new Response("You have been logged out. Have a good day!", {
+      status: 200
+    });
+  } catch (e) {
+    console.error(e);
+    return new Response("An error occurred while logging out.", {
+      status: 500
+    });
+  }
+}
+const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  action: action$2
 }, Symbol.toStringTag, { value: "Module" }));
 async function login(email, password) {
   const res = await fetch("http://localhost:8000/api/auth/login", {
@@ -1998,7 +2370,7 @@ async function action$1({ request }) {
       );
     }
     if (headers.has("Set-Cookie")) {
-      return redirect("/workspace", { headers });
+      return redirect(workspace, { headers });
     }
     return Response.json(response.data);
   } catch (e) {
@@ -2025,7 +2397,7 @@ function Login() {
     )
   ] }) });
 }
-const route7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   action: action$1,
   default: Login
@@ -2055,7 +2427,7 @@ async function deleteUrl(token, id) {
   });
   const apiResponse = await res.json();
   if (!res) {
-    throw new Error(apiResponse.message || "Error creating url");
+    throw new Error(apiResponse.message || "Error deleteting url");
   }
   return apiResponse;
 }
@@ -2161,13 +2533,13 @@ async function handlerProxy(req) {
   }
   const queryParams = Object.fromEntries(incomingUrl.searchParams.entries());
   const getCookie = req.headers.get("Cookie") || "";
-  const accessToken = await ACookie.parse(getCookie);
+  const token = await ACookie.parse(getCookie);
   const bodyParams = req.method !== "GET" ? await req.json() : {};
   const params = { ...queryParams, ...bodyParams };
   try {
     const result = await actions[action2](
       params,
-      accessToken
+      token
     );
     if (result.status === "error") {
       throw new Error(result.message || "Backend error occurred");
@@ -2208,7 +2580,7 @@ const action = async ({ request }) => {
     );
   }
 };
-const route8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   action,
   loader
@@ -2220,40 +2592,71 @@ const meta = () => {
   ];
 };
 function Index() {
-  return /* @__PURE__ */ jsx("div", { className: "flex h-screen items-center justify-center", children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-16", children: [
-    /* @__PURE__ */ jsxs("header", { className: "flex flex-col items-center gap-9", children: [
-      /* @__PURE__ */ jsxs("h1", { className: "leading text-2xl font-bold text-gray-800 dark:text-gray-100", children: [
-        "Welcome to ",
-        /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Remix" })
+  return /* @__PURE__ */ jsxs("section", { className: "bg-gradient-to-b from-blue-50 to-white py-16 px-6 md:px-12", children: [
+    /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto flex flex-col md:flex-row items-center", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex-1 text-center md:text-left md:pr-12", children: [
+        /* @__PURE__ */ jsxs("h1", { className: "text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4", children: [
+          "Boost Your Brand ",
+          /* @__PURE__ */ jsx("br", { className: "hidden md:block" }),
+          "With ",
+          /* @__PURE__ */ jsx("span", { className: "text-blue-600", children: "ByteTrim" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-lg md:text-xl text-gray-600 mb-6", children: "Take control of your links with a powerful custom URL shortener that transforms long, messy URLs into sleek, brand-focused links. Start attracting more clicks and tracking your growth with ease." }),
+        /* @__PURE__ */ jsx("div", { className: "flex justify-center md:justify-start", children: /* @__PURE__ */ jsx(
+          Link,
+          {
+            to: "/workspace",
+            className: "inline-block bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-3 rounded-md shadow-md transition-all",
+            children: "Get Started"
+          }
+        ) })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "h-[144px] w-[434px]", children: [
-        /* @__PURE__ */ jsx(
-          "img",
-          {
-            src: "/logo-light.png",
-            alt: "Remix",
-            className: "block w-full dark:hidden"
-          }
-        ),
-        /* @__PURE__ */ jsx(
-          "img",
-          {
-            src: "/logo-dark.png",
-            alt: "Remix",
-            className: "hidden w-full dark:block"
-          }
-        )
+      /* @__PURE__ */ jsx("div", { className: "flex-1 mt-10 md:mt-0", children: /* @__PURE__ */ jsx(
+        "img",
+        {
+          src: "https://via.placeholder.com/600x400?text=Your+App+Graphic",
+          alt: "ByteTrim illustration",
+          className: "w-full h-auto mx-auto"
+        }
+      ) })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-3 gap-8", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center text-center", children: [
+        /* @__PURE__ */ jsx("div", { className: "w-16 h-16 mb-4 bg-blue-100 text-blue-600 flex items-center justify-center rounded-full shadow", children: /* @__PURE__ */ jsx("svg", { className: "w-8 h-8", fill: "currentColor", viewBox: "0 0 20 20", children: /* @__PURE__ */ jsx("path", { d: "M5 8a3 3 0 106 0H5zM2 14.5A1.5 1.5 0 013.5 13h9a1.5 1.5 0 010 3h-9A1.5 1.5 0 012 14.5z" }) }) }),
+        /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold mb-2 text-gray-800", children: "Custom-Branded Links" }),
+        /* @__PURE__ */ jsx("p", { className: "text-gray-600", children: "Elevate your online presence with short, personalized URLs that carry your brand’s look and feel." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center text-center", children: [
+        /* @__PURE__ */ jsx("div", { className: "w-16 h-16 mb-4 bg-green-100 text-green-600 flex items-center justify-center rounded-full shadow", children: /* @__PURE__ */ jsx("svg", { className: "w-8 h-8", fill: "currentColor", viewBox: "0 0 20 20", children: /* @__PURE__ */ jsx("path", { d: "M15 10l4.546-4.546a1 1 0 10-1.414-1.414L13.172 8.586A2 2 0 0113 9.414V18h-2v-8.586a2 2 0 01-.586-1.414l-5.46-5.46A1 1 0 003.586 3.04L8.131 7.586A4 4 0 009 9.414V18H7v-8.586a4 4 0 01-1.172-2.828L1.96 3.96a3 3 0 114.243-4.243L10 7.758l3.797-3.797A3 3 0 1118.04 3.96L15 7l.001 3z" }) }) }),
+        /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold mb-2 text-gray-800", children: "Advanced Analytics" }),
+        /* @__PURE__ */ jsx("p", { className: "text-gray-600", children: "Track clicks, referrals, and user engagement in real time. Gain insights that help optimize campaigns." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center text-center", children: [
+        /* @__PURE__ */ jsx("div", { className: "w-16 h-16 mb-4 bg-purple-100 text-purple-600 flex items-center justify-center rounded-full shadow", children: /* @__PURE__ */ jsx("svg", { className: "w-8 h-8", fill: "currentColor", viewBox: "0 0 20 20", children: /* @__PURE__ */ jsx("path", { d: "M2 5a2 2 0 012-2h2a2 2 0 012 2H2zm2 0V3h2v2H4zM2 9h8a2 2 0 002-2v-.586a1 1 0 00-.293-.707l-1.414-1.414A1 1 0 0010 4.586V4h2v4a2 2 0 01-2 2H2V9zm16 6v2h-2a2 2 0 00-2 2 2 2 0 00-2-2H6v-2h8a2 2 0 002-2 2 2 0 002 2h2z" }) }) }),
+        /* @__PURE__ */ jsx("h3", { className: "text-xl font-semibold mb-2 text-gray-800", children: "Secure & Reliable" }),
+        /* @__PURE__ */ jsx("p", { className: "text-gray-600", children: "Experience peace of mind with enterprise-grade security and lightning-fast link redirections." })
       ] })
     ] }),
-    /* @__PURE__ */ jsx("nav", { className: "flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700", children: /* @__PURE__ */ jsx("p", { className: "leading-6 text-gray-700 dark:text-gray-200", children: "What's next?" }) })
-  ] }) });
+    /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto mt-16 flex flex-col items-center", children: [
+      /* @__PURE__ */ jsx("h2", { className: "text-3xl md:text-4xl font-bold text-gray-900 mb-4", children: "Ready to Transform Your Links?" }),
+      /* @__PURE__ */ jsx("p", { className: "text-gray-600 text-lg max-w-2xl text-center mb-6", children: "Join thousands of businesses and influencers already amplifying their brand with ByteTrim. It’s fast, secure, and designed for growth." }),
+      /* @__PURE__ */ jsx(
+        Link,
+        {
+          to: "/",
+          className: "bg-blue-600 hover:bg-blue-700 text-white text-lg font-semibold px-8 py-3 rounded-md shadow-md transition-all",
+          children: "Start Now"
+        }
+      )
+    ] })
+  ] });
 }
-const route9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const route10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Index,
   meta
 }, Symbol.toStringTag, { value: "Module" }));
-const serverManifest = { "entry": { "module": "/assets/entry.client-B-XFe01k.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/index-BicWogre.js", "/assets/browser-C6NKqTpo.js", "/assets/components-B9677cET.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-DOD_aws3.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/index-BicWogre.js", "/assets/browser-C6NKqTpo.js", "/assets/components-B9677cET.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/index-BykE6c94.js", "/assets/query-CYgPuyg8.js", "/assets/Icons-CwZxN_tX.js"], "css": ["/assets/global-BFLS_vd4.css"] }, "routes/workspace.new_url": { "id": "routes/workspace.new_url", "parentId": "root", "path": "workspace/new_url", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace.new_url-D-SAcEiS.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/Modal-CKsmnuEh.js", "/assets/index-BykE6c94.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/proxyClient-dOl5LkjN.js", "/assets/index-BicWogre.js"], "css": ["/assets/global-BFLS_vd4.css"] }, "routes/workspace._index": { "id": "routes/workspace._index", "parentId": "root", "path": "workspace", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace._index-C3rzTfum.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BvVM-Wmj.js", "/assets/ToolTip-Bj-giIg6.js", "/assets/Icons-CwZxN_tX.js", "/assets/components-B9677cET.js", "/assets/proxyClient-dOl5LkjN.js", "/assets/index-BicWogre.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/query-CYgPuyg8.js"], "css": ["/assets/global-BFLS_vd4.css"] }, "routes/auth.register": { "id": "routes/auth.register", "parentId": "root", "path": "auth/register", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.register-D0BbcHCt.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/DynamicForm-DhFB9_uU.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/workspace.$id": { "id": "routes/workspace.$id", "parentId": "root", "path": "workspace/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace._id-IAbsGNWZ.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BvVM-Wmj.js", "/assets/Modal-CKsmnuEh.js", "/assets/Icons-CwZxN_tX.js", "/assets/ToolTip-Bj-giIg6.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/index-BykE6c94.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/proxyClient-dOl5LkjN.js", "/assets/index-BicWogre.js", "/assets/query-CYgPuyg8.js"], "css": ["/assets/global-BFLS_vd4.css"] }, "routes/auth.refresh": { "id": "routes/auth.refresh", "parentId": "root", "path": "auth/refresh", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.refresh-BwhaTCBX.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/workspace.me": { "id": "routes/workspace.me", "parentId": "root", "path": "workspace/me", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace.me-u7II7bbb.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BvVM-Wmj.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/query-CYgPuyg8.js", "/assets/proxyClient-dOl5LkjN.js"], "css": [] }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.login-CNBlzZP9.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/DynamicForm-DhFB9_uU.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/api.proxy": { "id": "routes/api.proxy", "parentId": "root", "path": "api/proxy", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/api.proxy-l0sNRNKZ.js", "imports": [], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-Fdpc7-bJ.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js"], "css": [] } }, "url": "/assets/manifest-b868206c.js", "version": "b868206c" };
+const serverManifest = { "entry": { "module": "/assets/entry.client-B-XFe01k.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/index-BicWogre.js", "/assets/browser-C6NKqTpo.js", "/assets/components-B9677cET.js"], "css": [] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/root-BzdAjPzy.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/index-BicWogre.js", "/assets/browser-C6NKqTpo.js", "/assets/components-B9677cET.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/index-VuzOEtzj.js", "/assets/query-CYgPuyg8.js", "/assets/consts-DKFDT57y.js", "/assets/Icons-CwZxN_tX.js"], "css": ["/assets/consts-23pRJOBv.css"] }, "routes/workspace.new_url": { "id": "routes/workspace.new_url", "parentId": "root", "path": "workspace/new_url", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace.new_url-G9rNMjly.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/Modal-CD0xIWmW.js", "/assets/index-VuzOEtzj.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/consts-DKFDT57y.js", "/assets/proxyClient-HgQj7PMq.js", "/assets/index-BicWogre.js"], "css": ["/assets/consts-23pRJOBv.css"] }, "routes/workspace._index": { "id": "routes/workspace._index", "parentId": "root", "path": "workspace", "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace._index-xpGLncoT.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BOPsIEkK.js", "/assets/consts-DKFDT57y.js", "/assets/CustomDropDown-BimewSco.js", "/assets/Icons-CwZxN_tX.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/query-CYgPuyg8.js", "/assets/proxyClient-HgQj7PMq.js"], "css": ["/assets/consts-23pRJOBv.css"] }, "routes/auth.register": { "id": "routes/auth.register", "parentId": "root", "path": "auth/register", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.register-D0BbcHCt.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/DynamicForm-DhFB9_uU.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/workspace.$id": { "id": "routes/workspace.$id", "parentId": "root", "path": "workspace/:id", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace._id-D6NuaD3s.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BOPsIEkK.js", "/assets/Modal-CD0xIWmW.js", "/assets/Icons-CwZxN_tX.js", "/assets/CustomDropDown-BimewSco.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/index-VuzOEtzj.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/proxyClient-HgQj7PMq.js", "/assets/consts-DKFDT57y.js", "/assets/index-BicWogre.js", "/assets/query-CYgPuyg8.js"], "css": ["/assets/consts-23pRJOBv.css"] }, "routes/auth.refresh": { "id": "routes/auth.refresh", "parentId": "root", "path": "auth/refresh", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.refresh-DmnV9x5g.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/workspace.me": { "id": "routes/workspace.me", "parentId": "root", "path": "workspace/me", "index": void 0, "caseSensitive": void 0, "hasAction": false, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/workspace.me-B9OqILLC.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/queryOptions-BOPsIEkK.js", "/assets/QueryClientProvider-BDE6StR7.js", "/assets/query-CYgPuyg8.js", "/assets/proxyClient-HgQj7PMq.js"], "css": [] }, "routes/auth.logout": { "id": "routes/auth.logout", "parentId": "root", "path": "auth/logout", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.logout-l0sNRNKZ.js", "imports": [], "css": [] }, "routes/auth.login": { "id": "routes/auth.login", "parentId": "root", "path": "auth/login", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/auth.login-CNBlzZP9.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/formDefinitions-BJPzAbrR.js", "/assets/DynamicForm-DhFB9_uU.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] }, "routes/api.proxy": { "id": "routes/api.proxy", "parentId": "root", "path": "api/proxy", "index": void 0, "caseSensitive": void 0, "hasAction": true, "hasLoader": true, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/api.proxy-l0sNRNKZ.js", "imports": [], "css": [] }, "routes/_index": { "id": "routes/_index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "hasAction": false, "hasLoader": false, "hasClientAction": false, "hasClientLoader": false, "hasErrorBoundary": false, "module": "/assets/_index-DztH6WEQ.js", "imports": ["/assets/jsx-runtime-CAOzMBF_.js", "/assets/components-B9677cET.js", "/assets/index-BicWogre.js"], "css": [] } }, "url": "/assets/manifest-c930a87e.js", "version": "c930a87e" };
 const mode = "production";
 const assetsBuildDirectory = "build/client";
 const basename = "/";
@@ -2318,13 +2721,21 @@ const routes = {
     caseSensitive: void 0,
     module: route6
   },
+  "routes/auth.logout": {
+    id: "routes/auth.logout",
+    parentId: "root",
+    path: "auth/logout",
+    index: void 0,
+    caseSensitive: void 0,
+    module: route7
+  },
   "routes/auth.login": {
     id: "routes/auth.login",
     parentId: "root",
     path: "auth/login",
     index: void 0,
     caseSensitive: void 0,
-    module: route7
+    module: route8
   },
   "routes/api.proxy": {
     id: "routes/api.proxy",
@@ -2332,7 +2743,7 @@ const routes = {
     path: "api/proxy",
     index: void 0,
     caseSensitive: void 0,
-    module: route8
+    module: route9
   },
   "routes/_index": {
     id: "routes/_index",
@@ -2340,7 +2751,7 @@ const routes = {
     path: void 0,
     index: true,
     caseSensitive: void 0,
-    module: route9
+    module: route10
   }
 };
 export {
