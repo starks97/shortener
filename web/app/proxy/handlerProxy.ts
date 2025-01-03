@@ -7,7 +7,7 @@ import {
 
 import { actions } from "./proxyActions";
 
-import { ACookie, RCookie } from "~/cookies.server";
+import { ACookie } from "~/cookies.server";
 
 /**
  * A proxy handler function that routes the incoming request to a corresponding action based on URL search parameters.

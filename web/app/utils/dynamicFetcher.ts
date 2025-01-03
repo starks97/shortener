@@ -58,6 +58,8 @@ export default async function dynamicFetcher<T>({
     url += `&${urlParams.toString()}`;
   }
 
+  console.log("from dynamic fetcher", url);
+
   const headers: HeadersInit = {
     "Content-Type": "application/json",
   };
@@ -82,6 +84,27 @@ export default async function dynamicFetcher<T>({
   }
 
   const res = await fetch(url, fetchOptions);
-  const apiResponse = (await res.json()) as T;
-  return apiResponse;
+
+  if (!res.ok) {
+    console.error(`Fetch failed: ${res.status} ${res.statusText}`);
+    throw new Error(`HTTP error! Status: ${res.status}`);
+  }
+
+  try {
+    const apiResponse = res.headers
+      .get("Content-Type")
+      ?.includes("application/json")
+      ? await res.json()
+      : null;
+
+    if (!apiResponse) {
+      console.warn("Response is empty or not JSON:", await res.text());
+      throw new Error("Invalid or empty response from server.");
+    }
+
+    return apiResponse;
+  } catch (err) {
+    console.error("Failed to parse response as JSON:", err);
+    throw new Error("An error occurred while processing the response.");
+  }
 }

@@ -74,3 +74,21 @@ export async function fetchUrls<
     request,
   });
 }
+
+export async function deleteUrlRecord<T extends ApiResponse<null>>(
+  id: string,
+  request?: Request
+): Promise<T> {
+  if (!id) {
+    throw new Error("ID is required for updating a URL.");
+  }
+
+  return dynamicFetcher<T>({
+    method: "DELETE",
+    searchMethodParam: SearchMethodParams.URL,
+    searchActionParam: "delete",
+    queryParams: { id: id },
+    body: {},
+    request,
+  });
+}

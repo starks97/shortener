@@ -12,7 +12,7 @@ export default async function deleteUrl(token: string, id: string) {
   const apiResponse = (await res.json()) as ApiResponse<null>;
 
   if (!res) {
-    throw new Error(apiResponse.message || "Error creating url");
+    throw new Error(apiResponse.message || "Error deleteting url");
   }
 
   return apiResponse;

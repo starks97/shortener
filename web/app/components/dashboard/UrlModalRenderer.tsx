@@ -13,6 +13,7 @@ import DownLoadQR from "@components/qr/DownloadQr";
 import { modalActions } from "~/utils/modalActions";
 
 import UrlUpdater from "./UrlUpdater";
+import DeleteRecordBtn from "./DeleteRecordBtn";
 
 export default function UrlModalRenderer() {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ export default function UrlModalRenderer() {
             id={`modal-${id!}`}
             title={data.short_url}
             ref={dialogRef}
-            footer={<button onClick={closeModal}>Close</button>}
+            footer={<DeleteRecordBtn id={id!} />}
             close={closeModal}
           >
             <UrlUpdater
@@ -87,7 +88,6 @@ export default function UrlModalRenderer() {
             id={`qr_modal-${id!}`}
             title="QR Generator"
             ref={qrModalRef}
-            footer={<button onClick={closeModal}>Close</button>}
             close={closeModal}
           >
             <QRCodeGenerator
