@@ -7,10 +7,10 @@ import ToolTip from "../ToolTip";
 import { LinkIcon, QRIcon, ViewMore } from "../Icons";
 import { modalNavigateActions } from "~/consts";
 
-import { deployment } from "../../../config";
+import { deploymentFrontend } from "../../../config";
 
 export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
-  const redirection = `${deployment.path}/api/url/redirect/${slug}`;
+  const redirection = `${deploymentFrontend.path}/api/url/redirect/${slug}`;
 
   const handleRedirect = () => {
     window.open(`${redirection}`, "_blank");
