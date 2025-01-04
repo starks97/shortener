@@ -3,7 +3,7 @@ import { createCookie } from "@remix-run/node";
 export const RCookie = createCookie("refresh_token", {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   path: "/",
   maxAge: 60 * 60 * 24 * 7,
   ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
@@ -11,7 +11,7 @@ export const RCookie = createCookie("refresh_token", {
 
 export const ACookie = createCookie("access_token", {
   secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   path: "/",
   maxAge: 60 * 30,
   httpOnly: true,
