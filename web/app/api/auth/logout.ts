@@ -18,8 +18,6 @@ export default async function logout({ Atoken, Rtoken }: AuthTokens) {
 
   const data = (await res.json()) as ApiResponse<null>;
 
-  console.log("from api", data.message);
-
   if (!res.ok) {
     throw new Error(data.message);
   }

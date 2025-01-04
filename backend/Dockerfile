@@ -16,6 +16,6 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /app/target/release/url_shortener_api /app/url_shortener_api
+COPY --from=builder /app/target/release/backend /app/backend
 
-CMD ["/app/url_shortener_api"]
+CMD ["/app/backend"]
