@@ -15,8 +15,6 @@ import { modalActions } from "~/utils/modalActions";
 import UrlUpdater from "./UrlUpdater";
 import DeleteRecordBtn from "./DeleteRecordBtn";
 
-import { deploymentFrontend } from "config";
-
 export default function UrlModalRenderer() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -94,7 +92,7 @@ export default function UrlModalRenderer() {
           >
             <QRCodeGenerator
               canvasRef={canvasRef}
-              url={`${deploymentFrontend.path}/api/url/redirect/${data.slug}`}
+              url={`http://shortener.ambitious-idelle.internal:8000/api/url/redirect/${data.slug}`}
               size={200}
             />
             <div className="flex justify-center items-center ">

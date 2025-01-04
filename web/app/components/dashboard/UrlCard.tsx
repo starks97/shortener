@@ -7,10 +7,8 @@ import ToolTip from "../ToolTip";
 import { LinkIcon, QRIcon, ViewMore } from "../Icons";
 import { modalNavigateActions } from "~/consts";
 
-import { deploymentFrontend } from "../../../config";
-
 export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
-  const redirection = `${deploymentFrontend.path}/api/url/redirect/${slug}`;
+  const redirection = `http://shortener.ambitious-idelle.internal:8000/api/url/redirect/${slug}`;
 
   const handleRedirect = () => {
     window.open(`${redirection}`, "_blank");
