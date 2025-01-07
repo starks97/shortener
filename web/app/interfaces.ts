@@ -280,7 +280,7 @@ export type ModalActions = {
 };
 
 export type ModalRefs = {
-  dialog: React.RefObject<HTMLDialogElement>;
+  view: React.RefObject<HTMLDialogElement>;
   qr: React.RefObject<HTMLDialogElement>;
 };
 

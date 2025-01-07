@@ -14,7 +14,7 @@ export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
     try {
       const redirection = await urlRedirection(slug);
 
-      window.open(`${redirection.data}`, "_blank");
+      window.open(`${redirection.data?.original_url}`, "_blank");
     } catch (error) {
       console.error("Error occurred during redirection:", error);
     }

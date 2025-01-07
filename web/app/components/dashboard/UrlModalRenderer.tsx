@@ -28,7 +28,7 @@ export default function UrlModalRenderer() {
   const modalQueries = searchParams.get("modal") as keyof ModalRefs | null;
 
   const modalActions = createModalActions({
-    dialog: dialogRef,
+    view: dialogRef,
     qr: qrModalRef,
   });
 
