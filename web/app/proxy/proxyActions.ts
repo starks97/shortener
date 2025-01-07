@@ -5,6 +5,7 @@ import urlRecords from "~/api/url/urlRecords";
 import updateUrl from "~/api/url/updateUrl";
 import urlRecord from "~/api/url/urlRecord";
 import me from "~/api/auth/me";
+import urlRedirection from "~/api/url/urlRedirect";
 
 /**
  * A collection of asynchronous functions mapped to their respective proxy actions.
@@ -50,5 +51,13 @@ export const actions: ProxyActions = {
 
   me: async (_, token) => {
     return await me(token);
+  },
+  redirect: async (params) => {
+    const { slug } = params;
+    if (!slug) {
+      throw new Error("Slug not found, please provide a valid Slug");
+    }
+
+    return await urlRedirection(slug);
   },
 };

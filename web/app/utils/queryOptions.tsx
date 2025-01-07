@@ -1,13 +1,14 @@
-import { FetchQueryOptions } from "@tanstack/react-query";
+import { FetchQueryOptions, UseQueryOptions } from "@tanstack/react-query";
 import {
   UrlData,
   UrlCategories,
   ApiResponse,
   Me,
   SearchMethodParams,
+  UrlRedirection,
 } from "@interfaces";
 import dynamicFetcher from "./dynamicFetcher";
-import { fetchUrls } from "./proxyClient";
+import { fetchUrls, urlRedirection } from "./proxyClient";
 
 export const meQueryOptions = (
   request?: Request
@@ -75,6 +76,24 @@ export const urlQueryOptions = (
 
       return response.data;
     },
+    staleTime: 6000,
+  };
+};
+
+export const urlRedirectionQueryOption = (
+  slug: string
+): UseQueryOptions<UrlRedirection, Error> => {
+  return {
+    queryKey: ["url-redirection", slug],
+    queryFn: async (): Promise<UrlRedirection> => {
+      const response = await urlRedirection(slug);
+      if (!response || !response.data) {
+        throw new Error("No data found for the specified URL ID.");
+      }
+
+      return response.data;
+    },
+    enabled: !!slug,
     staleTime: 6000,
   };
 };

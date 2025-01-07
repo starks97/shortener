@@ -4,16 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import { urlQueryOptions } from "~/utils/queryOptions";
 import { DateConverter } from "~/utils/dateConverter";
 
-import { SearchModalType } from "@interfaces";
+import { ModalRefs } from "@interfaces";
 
 import Modal from "@components/Modal";
 import QRCodeGenerator from "@components/qr/QrGenerator";
 import DownLoadQR from "@components/qr/DownloadQr";
 
-import { modalActions } from "~/utils/modalActions";
+import { createModalActions } from "~/utils/modalActions";
 
 import UrlUpdater from "./UrlUpdater";
 import DeleteRecordBtn from "./DeleteRecordBtn";
+import { urlRedirection } from "~/utils/proxyClient";
 
 export default function UrlModalRenderer() {
   const navigate = useNavigate();
@@ -24,17 +25,20 @@ export default function UrlModalRenderer() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const qrModalRef = React.useRef<HTMLDialogElement>(null);
 
-  const modalQueries = searchParams.get("modal") as SearchModalType | null;
+  const modalQueries = searchParams.get("modal") as keyof ModalRefs | null;
+
+  const modalActions = createModalActions({
+    dialog: dialogRef,
+    qr: qrModalRef,
+  });
 
   useEffect(() => {
     if (!modalQueries) {
-      dialogRef.current?.close();
-      qrModalRef.current?.close();
-      return;
+      modalActions.closeAll();
+    } else {
+      modalActions.show(modalQueries);
     }
-
-    modalActions[modalQueries](dialogRef, qrModalRef);
-  }, [modalQueries]);
+  }, [modalQueries, modalActions]);
 
   const closeModal = () => {
     navigate(-1);
@@ -42,12 +46,29 @@ export default function UrlModalRenderer() {
 
   const { data, error, isLoading } = useQuery(urlQueryOptions(id!));
 
+  const { data: redirectionUrl, error: redirectionError } = useQuery({
+    queryKey: ["url-redirection", data?.slug],
+    queryFn: async () => {
+      if (data?.slug) {
+        const res = await urlRedirection(data.slug);
+
+        return res.data?.original_url;
+      }
+    },
+    enabled: !!data?.slug,
+    staleTime: 6000,
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (error instanceof Error) {
     return <div>Error: {error.message}</div>;
+  }
+
+  if (redirectionError instanceof Error) {
+    return <div>Error: {redirectionError.message}</div>;
   }
 
   return (
@@ -92,7 +113,7 @@ export default function UrlModalRenderer() {
           >
             <QRCodeGenerator
               canvasRef={canvasRef}
-              url={`http://shortener.ambitious-idelle.internal:8000/api/url/redirect/${data.slug}`}
+              url={redirectionUrl!}
               size={200}
             />
             <div className="flex justify-center items-center ">

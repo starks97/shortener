@@ -1,4 +1,4 @@
-import { ModalActions } from "@interfaces";
+import { ModalActions, ModalRefs } from "@interfaces";
 
 /**
  * A collection of actions to control the visibility of modal dialogs.
@@ -7,6 +7,20 @@ import { ModalActions } from "@interfaces";
  * By calling these actions, you can open or close specific dialogs based on the
  * intended behavior within your UI.
  */
+
+export const createModalActions = (refs: ModalRefs) => {
+  return {
+    show: (modalType: keyof ModalRefs) => {
+      Object.entries(refs).forEach(([key, ref]) => {
+        if (key === modalType) ref.current?.showModal();
+        else ref.current?.close();
+      });
+    },
+    closeAll: () => {
+      Object.values(refs).forEach((ref) => ref.current?.close());
+    },
+  };
+};
 export const modalActions: ModalActions = {
   view: (dialogRef, qrModalRef) => {
     dialogRef.current?.showModal();

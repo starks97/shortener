@@ -7,17 +7,23 @@ import ToolTip from "../ToolTip";
 import { LinkIcon, QRIcon, ViewMore } from "../Icons";
 import { modalNavigateActions } from "~/consts";
 
-export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
-  const redirection = `http://shortener.ambitious-idelle.internal:8000/api/url/redirect/${slug}`;
+import { urlRedirection } from "~/utils/proxyClient";
 
-  const handleRedirect = () => {
-    window.open(`${redirection}`, "_blank");
+export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
+  const handleRedirect = async (slug: string) => {
+    try {
+      const redirection = await urlRedirection(slug);
+
+      window.open(`${redirection.data}`, "_blank");
+    } catch (error) {
+      console.error("Error occurred during redirection:", error);
+    }
   };
   return (
     <div className="max-w-sm p-6 border-y border-orange-400 rounded-2xl flex items-center space-x-4 flex-col w-full h-auto">
       <div className="inline-flex font-medium items-center gap-2">
         <button
-          onClick={() => handleRedirect()}
+          onClick={() => handleRedirect(slug)}
           className={`w-full text-white py-2 px-5 rounded-xl transition flex items-center justify-center bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-300 }`}
           aria-label="Shorten URL"
         >

@@ -5,7 +5,11 @@ import { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const result = await handlerProxy(request);
-    return Response.json(result, { status: 200 });
+
+    return Response.json(result, {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.error(error);
     return Response.json(

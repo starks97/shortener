@@ -1,7 +1,5 @@
 // Utility Types
 
-import { T } from "node_modules/@tanstack/query-core/build/modern/hydration-ClXcjjG9";
-
 /**
  * A utility type that flattens nested `data` properties in API responses.
  * If the type `T` has a `data` property, it extracts and returns its type `U`.
@@ -52,6 +50,10 @@ export type UrlData = {
   views: number;
   createdAt: string;
   updatedAt: string;
+};
+
+export type UrlRedirection = {
+  original_url: string;
 };
 
 /**
@@ -174,7 +176,8 @@ export type SearchActionParamType =
   | "update"
   | "delete"
   | "create"
-  | "me";
+  | "me"
+  | "redirect";
 
 export enum SearchMethodParams {
   URL = "url",
@@ -193,6 +196,7 @@ export type ParamRecord = {
   category?: UrlCategories;
   limit?: string | number;
   offset?: string | number;
+  slug?: string;
 };
 
 /**
@@ -209,6 +213,7 @@ export type ActionReturnTypes = {
   delete: ApiResponse<null>;
   create: ApiResponse<UrlData>;
   me: ApiResponse<Me>;
+  redirect: ApiResponse<UrlRedirection>;
 };
 
 /**
@@ -272,6 +277,11 @@ export type ModalActions = {
     qrModalRef?: React.RefObject<HTMLDialogElement>
   ) => void;
   create: (dialogRef: React.RefObject<HTMLDialogElement>) => void;
+};
+
+export type ModalRefs = {
+  dialog: React.RefObject<HTMLDialogElement>;
+  qr: React.RefObject<HTMLDialogElement>;
 };
 
 // QR Code Generation Types

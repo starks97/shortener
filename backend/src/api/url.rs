@@ -1,4 +1,4 @@
-use actix_web::{delete, get, http, patch, post, web, HttpResponse};
+use actix_web::{delete, get, patch, post, web, HttpResponse};
 
 use validator::Validate;
 
@@ -6,9 +6,9 @@ use crate::models::url::{
     CreateUrl, OriginalUrl, UpdateUrl, Url, UrlPath, UrlPathRedirect, UrlQuery, UrlRecord,
 };
 
-use crate::app_state::AppState;
-
 use crate::jwt_auth::JwtMiddleware;
+
+use crate::app_state::AppState;
 
 use crate::custom_error::{handle_validation_error, CustomError, CustomHttpError};
 
@@ -243,7 +243,7 @@ pub async fn redirect_to_original_url(
         }
     };
 
-    Ok(HttpResponse::Found()
-        .append_header((http::header::LOCATION, original_url.clone()))
-        .finish())
+    Ok(HttpResponse::Ok().json(
+        serde_json::json!({"status": "success", "data": {"original_url": original_url.clone()}}),
+    ))
 }

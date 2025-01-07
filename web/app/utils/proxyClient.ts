@@ -3,6 +3,7 @@ import {
   UrlCategories,
   ApiResponse,
   SearchMethodParams,
+  UrlRedirection,
 } from "@interfaces";
 import dynamicFetcher from "./dynamicFetcher";
 
@@ -91,4 +92,40 @@ export async function deleteUrlRecord<T extends ApiResponse<null>>(
     body: {},
     request,
   });
+}
+
+export async function deleteRecord(id: string): Promise<ApiResponse<null>> {
+  const res = await fetch(`/api/proxy?url=delete&id=${id}`, {
+    headers: {
+      method: "DELETE",
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = (await res.json()) as ApiResponse<null>;
+
+  if (!res || data.status === "error") {
+    throw new Error(data.message);
+  }
+
+  return data;
+}
+
+export async function urlRedirection(
+  slug: string
+): Promise<ApiResponse<UrlRedirection>> {
+  const res = await fetch(`/api/proxy?url=redirect&slug=${slug}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const apiResponse = (await res.json()) as ApiResponse<UrlRedirection>;
+
+  if (!res || apiResponse.status === "error") {
+    throw new Error(apiResponse.message);
+  }
+
+  return apiResponse;
 }

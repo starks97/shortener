@@ -4,6 +4,8 @@ import { useNavigate } from "@remix-run/react";
 import toast from "react-hot-toast";
 import { workspace } from "~/consts";
 
+import { deleteRecord } from "~/utils/proxyClient";
+
 export default function DeleteRecordBtn({ id }: { id: string }) {
   const query = useQueryClient();
   const navigate = useNavigate();
@@ -15,20 +17,13 @@ export default function DeleteRecordBtn({ id }: { id: string }) {
   >({
     mutationFn: async ({ id }): Promise<ApiResponse<null>> => {
       try {
-        const deleteRecord = await fetch(`/api/proxy?url=delete&id=${id}`, {
-          headers: {
-            method: "DELETE",
-            "Content-Type": "application/json",
-          },
-        });
+        const deleteUrlRecord = await deleteRecord(id);
 
-        const res = (await deleteRecord.json()) as ApiResponse<null>;
-
-        if (res.status === "error") {
-          throw new Error("something happend");
+        if (deleteUrlRecord.status === "error") {
+          throw new Error(deleteUrlRecord.message);
         }
 
-        return res;
+        return deleteUrlRecord;
       } catch (error) {
         if (error instanceof Error) {
           throw error.message;
