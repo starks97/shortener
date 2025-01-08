@@ -1,4 +1,5 @@
-//export const baseUrl = process.env.BASE_URL ?? "";
+export const baseUrl =
+  "https://strange-clio-skycodegraphics-ad08cb4e.koyeb.app";
 
 export const workspace = `/workspace?offset=1&limit=10&category=All`;
 
