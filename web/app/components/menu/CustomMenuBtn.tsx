@@ -64,7 +64,7 @@ export default function CustomMenuBtn({
             {label.toLowerCase() === "workspace" &&
             currentPath === "/workspace" ? (
               <form method="post" action="/auth/logout">
-                <button className="menu_btn__a">Logout</button>
+                <button className="general_btn__a">Logout</button>
               </form>
             ) : label.toLowerCase() === "login" ||
               label.toLowerCase() === "workspace" ? (
@@ -74,7 +74,7 @@ export default function CustomMenuBtn({
                   search,
                 }}
               >
-                <button className="menu_btn__a">{label}</button>
+                <button className="general_btn__a">{label}</button>
               </Link>
             ) : (
               <Link

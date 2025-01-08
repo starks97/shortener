@@ -214,7 +214,7 @@ export default function UrlUpdater({
                     )}
 
                     {validationErrors.fieldError && (
-                      <div className="text-red-500 text-sm mb-4">
+                      <div className="text-red-500 text-sm my-2">
                         {validationErrors.fieldError}
                       </div>
                     )}

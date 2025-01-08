@@ -91,7 +91,7 @@ export default function DynamicForm<T>({
           <div key={field.name} className="flex flex-col mb-4">
             <label
               htmlFor={field.name}
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-orange-700"
             >
               {field.label}
             </label>
@@ -101,7 +101,7 @@ export default function DynamicForm<T>({
                 name={field.name}
                 id={field.name}
                 required={field.required}
-                className={`mt-1 block w-full rounded-md border ${
+                className={`mt-1 block w-full rounded-xl  ${
                   fieldError ? "border-red-500" : "border-gray-300"
                 } shadow-sm focus:border-blue-500 focus:ring-blue-500`}
                 aria-invalid={!!fieldError}
@@ -126,7 +126,7 @@ export default function DynamicForm<T>({
                 required={field.required}
                 placeholder={field.placeholder}
                 autoComplete={field.name}
-                className={`mt-1 block w-full rounded-md border ${
+                className={`mt-1 block w-full rounded-md border py-2 px-4 ${
                   fieldError ? "border-red-500" : "border-gray-300"
                 } shadow-sm focus:border-blue-500 focus:ring-blue-500`}
                 aria-invalid={!!fieldError}
@@ -146,10 +146,7 @@ export default function DynamicForm<T>({
           </div>
         );
       })}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-      >
+      <button type="submit" className="auth_form_btn__a">
         {submitLabel}
       </button>
     </form>

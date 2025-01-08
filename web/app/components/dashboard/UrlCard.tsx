@@ -24,7 +24,7 @@ export default function UrlCard({ short_url, id, slug }: UrlCardPropsTypes) {
       <div className="inline-flex font-medium items-center gap-2">
         <button
           onClick={() => handleRedirect(slug)}
-          className={`w-full text-white py-2 px-5 rounded-xl transition flex items-center justify-center bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-blue-300 }`}
+          className="general_btn__a"
           aria-label="Shorten URL"
         >
           <LinkIcon />

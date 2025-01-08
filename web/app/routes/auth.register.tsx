@@ -11,6 +11,7 @@ import { ActionData } from "@interfaces";
 
 import DynamicForm from "@components/DynamicForm";
 import { validationAction } from "@utils/validationAction";
+import AuthWrapperForm from "~/components/AuthWrapperForm";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData());
@@ -56,19 +57,25 @@ export default function Register() {
     errors: {},
   };
   return (
-    <div className="min-h-screen flex items-center justify-center ">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">
-          Register
-        </h2>
-
-        <DynamicForm<RegisterUserSchemaType>
-          actionData={actionData!}
-          formSchema={formDefinitions["register"]}
-          method="POST"
-          submitLabel="Register"
-        />
-      </div>
-    </div>
+    <AuthWrapperForm
+      title="Join"
+      description="Start managing and tracking your links today."
+    >
+      <DynamicForm<RegisterUserSchemaType>
+        actionData={actionData!}
+        formSchema={formDefinitions["register"]}
+        method="POST"
+        submitLabel="Register"
+      />
+      <p className="text-gray-300 text-center mt-4 text-sm">
+        Already have an account?{" "}
+        <a
+          href="/auth/login"
+          className="text-orange-700 hover:underline transition duration-150"
+        >
+          Log in here
+        </a>
+      </p>
+    </AuthWrapperForm>
   );
 }

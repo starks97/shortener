@@ -12,6 +12,7 @@ import formDefinitions from "~/formDefinitions";
 
 import DynamicForm from "@components/DynamicForm";
 import { workspace } from "~/consts";
+import AuthWrapperForm from "~/components/AuthWrapperForm";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData());
@@ -75,19 +76,26 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-black">
-          Login
-        </h2>
+    <AuthWrapperForm
+      title="Welcome Back to"
+      description="Manage and track your links effortlessly."
+    >
+      <DynamicForm<LoginUserSchemaType>
+        actionData={actionData!}
+        formSchema={formDefinitions["login"]}
+        method="POST"
+        submitLabel="Login"
+      />
 
-        <DynamicForm<LoginUserSchemaType>
-          actionData={actionData!}
-          formSchema={formDefinitions["login"]}
-          method="POST"
-          submitLabel="Login"
-        />
-      </div>
-    </div>
+      <p className="text-gray-300 text-center mt-4 text-sm">
+        Don’t have an account?{" "}
+        <a
+          href="/auth/register"
+          className="text-orange-700 hover:underline transition duration-150"
+        >
+          Sign up here
+        </a>
+      </p>
+    </AuthWrapperForm>
   );
 }

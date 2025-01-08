@@ -91,7 +91,7 @@ export default function UrlModalRenderer() {
           </Modal>
           <Modal
             id={`qr_modal-${id!}`}
-            title="QR Generator"
+            title={`${data.short_url}`}
             ref={qrModalRef}
             close={closeModal}
           >

@@ -20,7 +20,18 @@ export const ACookie = createCookie("access_token", {
 
 export const logoutRtoken = createCookie("refresh_token", {
   maxAge: 0,
+  path: "/",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });
+
 export const logoutAtoken = createCookie("access_token", {
   maxAge: 0,
+  path: "/",
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  ...(process.env.NODE_ENV === "production" && { domain: process.env.DOMAIN }),
 });

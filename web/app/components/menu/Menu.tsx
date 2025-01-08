@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "@remix-run/react";
+import { Link } from "@remix-run/react";
 import CustomMenuBtn from "./CustomMenuBtn";
 import { ByteTrimLogo } from "../Icons";
 
@@ -11,7 +11,6 @@ export default function Menu({
   canRefresh: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <nav className="bg-transparent border-b border-gray-200 px-5 py-3 mb-5">

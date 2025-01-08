@@ -159,7 +159,9 @@ export default function NewUrl() {
               />
             )}
             {validationErrors[field.name] && (
-              <p className="error-message">{validationErrors[field.name]}</p>
+              <p className="error-message text-red-600 text-lg my-2">
+                {validationErrors[field.name]}
+              </p>
             )}
           </div>
         ))}
