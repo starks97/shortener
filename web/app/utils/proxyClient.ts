@@ -111,21 +111,19 @@ export async function deleteRecord(id: string): Promise<ApiResponse<null>> {
   return data;
 }
 
-export async function urlRedirection(
-  slug: string
-): Promise<ApiResponse<UrlRedirection>> {
-  const res = await fetch(`/api/proxy?url=redirect&slug=${slug}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const apiResponse = (await res.json()) as ApiResponse<UrlRedirection>;
-
-  if (!res || apiResponse.status === "error") {
-    throw new Error(apiResponse.message);
+export async function urlRedirection<T extends ApiResponse<UrlRedirection>>(
+  slug: string,
+  request?: Request
+): Promise<T> {
+  if (!slug) {
+    throw new Error("SLUG is required for updating a URL.");
   }
 
-  return apiResponse;
+  return dynamicFetcher<T>({
+    method: "GET",
+    searchMethodParam: SearchMethodParams.URL,
+    searchActionParam: "redirect",
+    queryParams: { slug },
+    request,
+  });
 }

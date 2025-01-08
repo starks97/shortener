@@ -14,12 +14,13 @@ import { createModalActions } from "~/utils/modalActions";
 
 import UrlUpdater from "./UrlUpdater";
 import DeleteRecordBtn from "./DeleteRecordBtn";
-import { urlRedirection } from "~/utils/proxyClient";
 
 export default function UrlModalRenderer() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
+
+  const baseUrl = import.meta.env.VITE_BASE_URL;
 
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -46,29 +47,12 @@ export default function UrlModalRenderer() {
 
   const { data, error, isLoading } = useQuery(urlQueryOptions(id!));
 
-  const { data: redirectionUrl, error: redirectionError } = useQuery({
-    queryKey: ["url-redirection", data?.slug],
-    queryFn: async () => {
-      if (data?.slug) {
-        const res = await urlRedirection(data.slug);
-
-        return res.data?.original_url;
-      }
-    },
-    enabled: !!data?.slug,
-    staleTime: 6000,
-  });
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (error instanceof Error) {
     return <div>Error: {error.message}</div>;
-  }
-
-  if (redirectionError instanceof Error) {
-    return <div>Error: {redirectionError.message}</div>;
   }
 
   return (
@@ -113,7 +97,7 @@ export default function UrlModalRenderer() {
           >
             <QRCodeGenerator
               canvasRef={canvasRef}
-              url={redirectionUrl!}
+              url={`${baseUrl}/workspace/qr-redirection/${data.slug}`}
               size={200}
             />
             <div className="flex justify-center items-center ">

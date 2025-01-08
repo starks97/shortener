@@ -79,21 +79,3 @@ export const urlQueryOptions = (
     staleTime: 6000,
   };
 };
-
-export const urlRedirectionQueryOption = (
-  slug: string
-): UseQueryOptions<UrlRedirection, Error> => {
-  return {
-    queryKey: ["url-redirection", slug],
-    queryFn: async (): Promise<UrlRedirection> => {
-      const response = await urlRedirection(slug);
-      if (!response || !response.data) {
-        throw new Error("No data found for the specified URL ID.");
-      }
-
-      return response.data;
-    },
-    enabled: !!slug,
-    staleTime: 6000,
-  };
-};
