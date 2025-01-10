@@ -31,7 +31,8 @@ export function parseNavLink(link: NavItemLink): {
 
 export function baseNavItems(): NavItem[] {
   return [
-    { label: "Home", link: "/" },
     { label: "Workspace", link: navigateWorkSpace },
+    { label: "About", link: "/about" },
+    { label: "Pricing", link: "/pricing" },
   ];
 }

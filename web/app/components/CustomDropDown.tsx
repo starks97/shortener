@@ -119,14 +119,14 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   return (
     <div
-      className="flex justify-center items-center space-x-5 "
+      className="flex space-x-5 items-center flex-col md:flex-row justify-center space-y-5 md:space-y-0"
       ref={dropdownRef}
     >
       {label && (
         <label
           id="dropdown-label"
           htmlFor="custom-dropdown"
-          className="block text-lg font-medium text-gray-200 mb-1"
+          className="text-lg font-medium text-gray-200"
         >
           {label}
         </label>
@@ -166,7 +166,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
           role="listbox"
           aria-labelledby="dropdown-label"
           tabIndex={-1}
-          className={`absolute z-10 mt-1 ${
+          className={`absolute z-10 mt-1  ${
             label ? "w-48" : "w-7/12"
           } bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm border border-orange-400`}
         >

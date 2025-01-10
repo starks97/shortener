@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { useQuery } from "@tanstack/react-query";
 
 import { UrlCategories } from "~/interfaces";

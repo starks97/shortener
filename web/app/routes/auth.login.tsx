@@ -79,6 +79,7 @@ export default function Login() {
     <AuthWrapperForm
       title="Welcome Back to"
       description="Manage and track your links effortlessly."
+      appName="ByteTrim!"
     >
       <DynamicForm<LoginUserSchemaType>
         actionData={actionData!}

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Link, useLocation } from "@remix-run/react";
 import { baseNavItems, parseNavLink } from "./navItems";
 
@@ -38,29 +39,34 @@ export default function CustomMenuBtn({
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const publicRoutes = ["/", "/auth/login"];
+  const items = useMemo(() => {
+    const baseItems = baseNavItems();
 
-  const items = baseNavItems();
+    const publicRoutes = ["/", "/auth/login", "/auth/register"];
 
-  if ((isLoggedIn || canRefresh) && currentPath.startsWith("/workspace")) {
-    items.push({ label: "Profile", link: "/workspace/me" });
-    items.push({ label: "New Url", link: "/workspace/new_url" });
-  }
+    if ((isLoggedIn || canRefresh) && currentPath.startsWith("/workspace")) {
+      baseItems.push({ label: "Profile", link: "/workspace/me" });
+      baseItems.push({ label: "New Url", link: "/workspace/new_url" });
+    }
 
-  if (!isLoggedIn && !canRefresh && publicRoutes.includes(currentPath)) {
-    items.splice(1, 1, { label: "Login", link: "/auth/login" });
-  }
+    if (!isLoggedIn && !canRefresh && publicRoutes.includes(currentPath)) {
+      baseItems[1] = { label: "Login", link: "/auth/login" };
+    }
 
-  const sortedItems = items.sort((a, b) =>
-    a.label.toLowerCase().localeCompare(b.label.toLowerCase())
-  );
+    return baseItems.sort((a, b) =>
+      a.label.toLowerCase().localeCompare(b.label.toLowerCase())
+    );
+  }, [isLoggedIn, canRefresh, currentPath]);
 
   return (
     <>
-      {sortedItems.map(({ label, link }) => {
+      {items.map(({ label, link }) => {
         const { pathname, search } = parseNavLink(link);
         return (
-          <li key={label}>
+          <li
+            key={label}
+            className="flex flex-col space-y-10 md:space-y-0 items-center md:items-start"
+          >
             {label.toLowerCase() === "workspace" &&
             currentPath === "/workspace" ? (
               <form method="post" action="/auth/logout">

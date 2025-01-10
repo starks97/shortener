@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "@remix-run/react";
 import CustomMenuBtn from "./CustomMenuBtn";
-import { ByteTrimLogo } from "../Icons";
+import { ByteTrimLogo, HambugerMenuIcon } from "../Icons";
 
 export default function Menu({
   isLoggedIn,
@@ -11,6 +11,22 @@ export default function Menu({
   canRefresh: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="bg-transparent border-b border-gray-200 px-5 py-3 mb-5">
@@ -27,48 +43,32 @@ export default function Menu({
         </div>
 
         {/* Hamburger button */}
-        <div className="flex md:hidden">
+        <div className="flex lg:hidden">
           <button
             type="button"
             className="text-white hover:text-gray-300 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
-            <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
-              {menuOpen ? (
-                // Close (X) Icon
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M6 18L18 6M6 6l12 12"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              ) : (
-                // Hamburger Icon
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M4 6h16M4 12h16M4 18h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              )}
-            </svg>
+            {menuOpen ? (
+              // Close (X) Icon
+              <span>X</span>
+            ) : (
+              // Hamburger Icon
+              <HambugerMenuIcon />
+            )}
           </button>
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden md:flex md:space-x-8 items-center">
+        <ul className="hidden lg:flex lg:space-x-8 items-center">
           <CustomMenuBtn isLoggedIn={isLoggedIn} canRefresh={canRefresh} />
         </ul>
       </div>
 
       {/* Mobile/Tablet Menu*/}
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-200">
+        <div className="lg:hidden border-t border-gray-200" ref={menuRef}>
           <ul className="flex flex-col space-y-1 py-2 px-4">
             <CustomMenuBtn isLoggedIn={isLoggedIn} canRefresh={canRefresh} />
           </ul>

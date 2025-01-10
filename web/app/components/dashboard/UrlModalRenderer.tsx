@@ -72,19 +72,19 @@ export default function UrlModalRenderer() {
               original_url={data.original_url}
               short_url={data.short_url}
             />
-            <div className="flex flex-row w-full mt-4">
-              <span className="text-gray-200 w-1/4">Views</span>
-              <p className="text-gray-200">{data.views}</p>
+            <div className="flex flex-row space-x-3 w-full mt-4">
+              <span className="text-orange-500 w-1/4">Views</span>
+              <p className="text-gray-300">{data.views}</p>
             </div>
-            <div className="flex flex-row w-full mt-4">
-              <span className="text-gray-200 w-1/4">Created:</span>
-              <p className="text-gray-200">
+            <div className="flex flex-row space-x-3 w-full mt-4">
+              <span className="text-orange-500 w-1/4">{`Created `}</span>
+              <p className="text-gray-300">
                 {DateConverter.formatDateFromString(data.createdAt)}
               </p>
             </div>
-            <div className="flex flex-row w-full mt-4">
-              <span className="text-gray-200 w-1/4">Updated</span>
-              <p className="text-gray-200">
+            <div className="flex flex-row space-x-3 w-full mt-4">
+              <span className="text-orange-500 w-1/4">Updated</span>
+              <p className="text-gray-300">
                 {DateConverter.formatDateFromString(data.updatedAt)}
               </p>
             </div>

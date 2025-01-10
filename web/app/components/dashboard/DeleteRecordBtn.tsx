@@ -57,10 +57,10 @@ export default function DeleteRecordBtn({ id }: { id: string }) {
   return (
     <>
       <button
-        className="border-2 border-red-600 px-5 py-2 text-red-500"
+        className="border-2 border-red-600 px-5 py-2 text-gray-300 hover:text-red-500 rounded-md"
         onClick={handleDeleteUrlRecord}
       >
-        Delete Record
+        Delete Url
       </button>
     </>
   );

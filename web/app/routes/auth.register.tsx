@@ -60,6 +60,7 @@ export default function Register() {
     <AuthWrapperForm
       title="Join"
       description="Start managing and tracking your links today."
+      appName="ByteTrim!"
     >
       <DynamicForm<RegisterUserSchemaType>
         actionData={actionData!}

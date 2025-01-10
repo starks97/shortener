@@ -21,7 +21,68 @@ body {
   .home_btn__a {
     @apply w-full text-white py-4 px-6 rounded-xl transition flex items-center justify-center bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black;
   }
+  .about_btn__a {
+    @apply w-full  text-white py-4 px-6 rounded-xl transition flex items-center justify-center bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black;
+  }
   .auth_form_btn__a {
     @apply w-full text-white py-2 px-4 rounded-xl transition flex items-center justify-center bg-transparent border-2 border-orange-500 hover:bg-orange-400 hover:text-black;
+  }
+  .footer {
+    @apply bg-transparent text-orange-500 border-t border-orange-500 py-6 text-center;
+  }
+
+  .footer-content {
+    @apply max-w-5xl mx-auto px-4 flex flex-col items-center gap-4 space-y-10;
+  }
+
+  .footer-logo {
+    @apply flex flex-col;
+  }
+
+  .footer-links {
+    @apply flex  flex-col items-center justify-center;
+  }
+
+  .footer-links a {
+    @apply hover:text-orange-600 transition-colors duration-200;
+  }
+
+  .footer-social {
+    @apply flex flex-col items-center justify-center;
+  }
+
+  .social-icon {
+    @apply w-6 h-6 text-orange-500 hover:text-orange-600 transition-colors duration-200;
+  }
+
+  .footer-text {
+    @apply text-sm text-orange-400;
+  }
+  .coming-soon {
+    @apply bg-transparent text-orange-500 py-12 flex items-center justify-center min-h-screen;
+  }
+
+  .coming-soon_content {
+    @apply max-w-xl text-center p-6 border border-orange-500 rounded-lg;
+  }
+
+  .coming-soon_title {
+    @apply text-4xl font-bold uppercase mb-4;
+  }
+
+  .coming-soon_description {
+    @apply text-orange-400 text-lg mb-6;
+  }
+
+  .subscribe-form {
+    @apply flex flex-col gap-4 items-center;
+  }
+
+  .email-input {
+    @apply w-full max-w-md p-3 border border-orange-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500;
+  }
+
+  .subscribe-button {
+    @apply bg-orange-500 text-white py-2 px-6 rounded-lg uppercase font-semibold hover:bg-orange-600 transition-colors duration-200;
   }
 }

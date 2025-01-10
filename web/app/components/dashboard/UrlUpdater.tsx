@@ -158,7 +158,7 @@ export default function UrlUpdater({
               <div key={field.name} className="mb-4">
                 {fieldBeingEdited !== field.name && (
                   <div className="flex w-full flex-col md:flex-row">
-                    <span className="text-gray-200 w-1/4">{field.name}</span>
+                    <span className="text-orange-500 w-1/4">{field.name}</span>
                     <div className="flex flex-row align-start">
                       <button
                         className="text-blue-500 hover:underline"
@@ -204,7 +204,6 @@ export default function UrlUpdater({
 
                     {field.name === "category" && (
                       <CustomDropdown
-                        label="Category"
                         selectedCategory={
                           inputValue["category"] as UrlCategories
                         }

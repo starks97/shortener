@@ -35,7 +35,7 @@ export default function FilterAndPag({
   };
 
   return (
-    <div className="container mx-auto flex justify-center flex-col md:flex-row md:justify-between items-center space-y-5">
+    <div className="container mx-auto p-10 flex justify-center flex-col md:flex-row md:justify-between items-center space-y-5">
       <div className="space-x-8">
         <button
           onClick={() => handlePageChange(offset - 1)}
@@ -65,14 +65,13 @@ export default function FilterAndPag({
           </button>
         )}
       </div>
-      <div className="">
-        <CustomDropdown
-          label="Category"
-          selectedCategory={category}
-          onSelectCategory={handleCtgChange}
-          isFiltered={true}
-        />
-      </div>
+
+      <CustomDropdown
+        label="Category"
+        selectedCategory={category}
+        onSelectCategory={handleCtgChange}
+        isFiltered={true}
+      />
     </div>
   );
 }
