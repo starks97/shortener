@@ -119,7 +119,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
 
   return (
     <div
-      className="flex space-x-5 items-center flex-col md:flex-row justify-center space-y-5 md:space-y-0"
+      className="flex space-x-5 items-center w-full flex-col md:flex-row justify-center space-y-5 md:space-y-0"
       ref={dropdownRef}
     >
       {label && (

@@ -5,6 +5,7 @@ import Footer from "~/components/Footer";
 import Services from "~/components/home/Services";
 import { navigateWorkSpace } from "~/consts";
 import { RCookie } from "~/cookies.server";
+import getMetaTags from "~/utils/metaTags";
 
 export const loader = async ({ request }: ActionFunctionArgs) => {
   const getCookie = request.headers.get("Cookie") || "";
@@ -25,48 +26,7 @@ export const loader = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "ByteTrim - Shorten Your URLs Effortlessly" },
-    {
-      name: "description",
-      content:
-        "ByteTrim is a fast and reliable URL shortener service that helps you manage and track your links with ease. Simplify your links and improve your online presence.",
-    },
-    {
-      name: "keywords",
-      content: "link shortener, link management, short links",
-    },
-    { name: "author", content: "ByteTrim Team" },
-    { name: "viewport", content: "width=device-width, initial-scale=1" },
-    {
-      property: "og:title",
-      content: "ByteTrim - Shorten Your URLs Effortlessly",
-    },
-    {
-      property: "og:description",
-      content:
-        "Simplify and track your URLs with ByteTrim, the ultimate link management tool.",
-    },
-    { property: "og:url", content: "https://bytetrim.com" },
-    { property: "og:type", content: "website" },
-    { property: "og:image", content: "https://bytetrim.com/preview-image.jpg" }, // Replace with the actual preview image URL
-    { name: "twitter:card", content: "summary_large_image" },
-    {
-      name: "twitter:title",
-      content: "ByteTrim - Shorten Your URLs Effortlessly",
-    },
-    {
-      name: "twitter:description",
-      content:
-        "ByteTrim is a reliable URL shortener for simplifying and tracking your links. Perfect for businesses and individuals.",
-    },
-    {
-      name: "twitter:image",
-      content: "https://bytetrim.com/preview-image.jpg",
-    }, // Replace with the actual Twitter image URL
-  ];
-};
+export const meta: MetaFunction = () => getMetaTags("home");
 
 export default function Index() {
   const { isLoggedIn } = useLoaderData<typeof loader>();
@@ -123,7 +83,7 @@ export default function Index() {
             growth.
           </p>
           <Link to={"/auth/register"}>
-            <button className="home_btn__a max-w-3xl">Start Now</button>
+            <button className="home_btn__a m">Start Now</button>
           </Link>
         </div>
       </section>

@@ -329,3 +329,24 @@ export interface DynamicFetcherProps {
   body?: Record<string, unknown>;
   request?: Request;
 }
+
+//metatags
+
+interface MetaData {
+  title: string;
+  description: string;
+  keywords: string;
+  author: string;
+  viewport: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogUrl: string;
+  ogType: string;
+  ogImage: string;
+  twitterCard: string;
+  twitterTitle: string;
+  twitterDescription: string;
+  twitterImage: string;
+}
+
+export type MetaDictionary = Record<string, (id?: string) => MetaData>;

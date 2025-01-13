@@ -1,5 +1,10 @@
 import Footer from "~/components/Footer";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link } from "@remix-run/react";
+import { MetaFunction } from "@remix-run/node";
+
+import getMetaTags from "~/utils/metaTags";
+
+export const meta: MetaFunction = () => getMetaTags("about");
 
 export default function About() {
   return (
@@ -86,7 +91,7 @@ export default function About() {
             professionals who value organization, efficiency, and sharing. Give
             it a try and transform the way you manage your online resources!
           </p>
-          <Link to={"/auth/register"}>
+          <Link to="/auth/register">
             <button className="about_btn__a ">Start Now</button>
           </Link>
         </div>

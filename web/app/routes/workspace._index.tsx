@@ -7,6 +7,7 @@ import middleware from "../middleware";
 import { UrlCategories } from "~/interfaces";
 import { urlsQueryOptions } from "~/utils/queryOptions";
 import Dashboard from "~/components/dashboard/Dashboard";
+import getMetaTags from "~/utils/metaTags";
 
 type LoaderData = {
   offset: number;
@@ -41,31 +42,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     category,
   });
 };
-export const meta: MetaFunction = () => {
-  return [
-    { title: `Workspace | ByteTrim` },
-    { name: "viewport", content: "width=device-width, initial-scale=1" },
-    { name: "author", content: "ByteTrim Team" },
-    {
-      name: "description",
-      content: `Manage and organize your links in Workspace. ByteTrim offers an efficient way to handle your shortened URLs.`,
-    },
-    {
-      property: "og:title",
-      content: `Workspace | ByteTrim`,
-    },
-    {
-      property: "og:description",
-      content: `Take control of your links in Workspace. Organize and monitor your shortened URLs with ease.`,
-    },
-    { property: "og:type", content: "website" },
-    {
-      property: "og:url",
-      content: `https://bytetrim.com/workspace`,
-    },
-    { property: "og:image", content: "https://bytetrim.com/preview-image.jpg" }, // Replace with the correct preview image URL
-  ];
-};
+export const meta: MetaFunction = () => getMetaTags("workspace");
 
 export default function WorkSpace() {
   const { offset, limit, category } = useLoaderData<LoaderData>();

@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, redirect, MetaFunction } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 import { LoginUserSchema, LoginUserSchemaType } from "@models/auth.models";
 
@@ -13,6 +13,7 @@ import formDefinitions from "~/formDefinitions";
 import DynamicForm from "@components/DynamicForm";
 import { workspace } from "~/consts";
 import AuthWrapperForm from "~/components/AuthWrapperForm";
+import getMetaTags from "~/utils/metaTags";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData());
@@ -69,6 +70,8 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 }
+
+export const meta: MetaFunction = () => getMetaTags("login");
 
 export default function Login() {
   const actionData = useActionData<ActionData<LoginUserSchemaType>>() || {

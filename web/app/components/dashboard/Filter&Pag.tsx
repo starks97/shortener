@@ -36,7 +36,7 @@ export default function FilterAndPag({
 
   return (
     <div className="container mx-auto p-10 flex justify-center flex-col md:flex-row md:justify-between items-center space-y-5">
-      <div className="space-x-8">
+      <div className="space-x-8 w-full justify-center flex items-center">
         <button
           onClick={() => handlePageChange(offset - 1)}
           disabled={offset <= 1}

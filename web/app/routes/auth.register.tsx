@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, redirect, MetaFunction } from "@remix-run/node";
 import { useActionData } from "@remix-run/react";
 
 import register from "@api/auth/register";
@@ -12,6 +12,7 @@ import { ActionData } from "@interfaces";
 import DynamicForm from "@components/DynamicForm";
 import { validationAction } from "@utils/validationAction";
 import AuthWrapperForm from "~/components/AuthWrapperForm";
+import getMetaTags from "~/utils/metaTags";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = Object.fromEntries(await request.formData());
@@ -51,6 +52,8 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 }
+
+export const meta: MetaFunction = () => getMetaTags("register");
 
 export default function Register() {
   const actionData = useActionData<ActionData<RegisterUserSchemaType>>() || {
